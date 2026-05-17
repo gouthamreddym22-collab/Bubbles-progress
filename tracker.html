@@ -230,6 +230,14 @@
     box-shadow: 0 0 6px rgba(74,222,128,0.55);
     flex-shrink: 0;
   }
+  .test-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--text-dim);
+    box-shadow: 0 0 6px rgba(126,142,176,0.4);
+    flex-shrink: 0;
+  }
+  .testing-header { border-top: 1px dashed var(--border-bright); }
 
   /* === Module body ======================================================= */
   .module-body {
@@ -285,6 +293,50 @@
   .status-done { color: var(--done); }
   .status-partial { color: var(--accent-bright); }
   .status-todo { color: var(--text-dim); }
+  .status-untested { color: var(--text-dim); opacity: 0.7; font-style: italic; }
+
+  /* === Confidence row (per-module + Testing section) ===================== */
+  .confidence-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 0 0 12px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+  }
+  .confidence-label {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .confidence-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .confidence-untested {
+    background: rgba(126, 142, 176, 0.06);
+    color: var(--text-dim);
+    border-color: var(--border);
+  }
+  .confidence-untested .confidence-label { font-style: italic; }
+  .confidence-low {
+    background: rgba(239, 68, 68, 0.08);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .confidence-medium {
+    background: rgba(251, 191, 36, 0.08);
+    color: var(--warn);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+  .confidence-high {
+    background: rgba(74, 222, 128, 0.08);
+    color: var(--done);
+    border-color: rgba(74, 222, 128, 0.3);
+  }
 
   .sub-bar { padding: 0 0; }
   .sub-bar .bar-track { height: 4px; }
@@ -385,8 +437,8 @@
        minimum is the ship bar.
        ===================================================================== */
     const DATA = {
-      generated_at: "2026-05-17",
-      source: "handoff state: classifier-discipline arc fully closed (5 of 5), three open defects closed, submodules reordered by step-by-step build sense, cross-platform extracted to its own module, internal vision tracker re-homed under Module 1 as the autonomous-loop sub-program it's intended to become",
+      generated_at: "2026-05-18",
+      source: "mid-session update: Testing section added (Module confidence scores via /bubbles-test); user-facing project description landed; Module 1 design choices frozen for upcoming autonomous-loop slice (idle-driven, per-loop auth, hybrid filter, four-panel right-rail, HR-7 scrubbing slice next)",
       overall_percent: 62,
       modules: [
         {
@@ -466,6 +518,7 @@
             "Autonomous-loop infrastructure has the safety primitive (self-modification can be invoked autonomously) but no trigger mechanism, scheduler, or scan implementation yet. PREREQUISITE for the four loops below.",
             "Internal vision tracker MVP (pullable-on-demand chat report) was built first as a fractional step toward the real thing: an autonomous-loop sub-program that proactively surfaces vision-grounded requests + warnings. Full rebuild deferred to its slot in this section's build order; current 15% reflects only the read surface.",
           ],
+          confidence: null,
         },
         {
           name: "Module 2 — Growth & continuity readiness",
@@ -486,6 +539,7 @@
             "Federation as resource-pool propagation: zero today. Vision frames this as Bubbles spreading to any authorized hardware (the 'virus, in the propagation sense' framing) — each new device pools its compute/storage/sensors into shared resources.",
             "Backup / failsafe: zero coverage. Single-machine state today.",
           ],
+          confidence: null,
         },
         {
           name: "Module 3 — Operating disciplines",
@@ -504,6 +558,7 @@
           issues: [
             "UI excellence: PC Electron shell is functional but not yet polished (basic styling, no animations, no skeleton states, no perception-threshold loading); mobile + companion surfaces at 0%. Below the bar set by the vision — needs a dedicated polish slice on PC + design system before mobile builds.",
           ],
+          confidence: null,
         },
         {
           name: "Module 4 — Cross-platform presence (UI consistency + phone app + future devices)",
@@ -520,6 +575,7 @@
             "No shared design system today — any phone app would diverge visually from PC unless the system is built first.",
             "Cross-platform sync (state, conversation log, audit) has no transport or conflict-resolution design yet; prerequisite for the phone app.",
           ],
+          confidence: null,
         },
         {
           name: "Module 5 — Long-term horizons (scaffolding only at V1)",
@@ -533,6 +589,22 @@
             { name: "Embodied presence (robots, IoT, vehicle, wearables)", percent: 0 },
           ],
           issues: [],
+          confidence: null,
+        },
+        {
+          name: "Testing",
+          percent: null,
+          is_testing_section: true,
+          submodules: [
+            { name: "Module 1 — Capability scope readiness", percent: null, is_confidence: true },
+            { name: "Module 2 — Growth & continuity readiness", percent: null, is_confidence: true },
+            { name: "Module 3 — Operating disciplines", percent: null, is_confidence: true },
+            { name: "Module 4 — Cross-platform presence", percent: null, is_confidence: true },
+            { name: "Module 5 — Long-term horizons", percent: null, is_confidence: true },
+          ],
+          issues: [
+            "No module has been tested yet. Invoke <code>/bubbles-test &lt;module&gt;</code> to run an aggressive test pass and produce a confidence score (architecture vs. vision + genesis docs, functionality, security, efficiency, Hard Rule enforcement coverage). Scores appear here as tests are run.",
+          ],
         },
       ],
     };
@@ -557,25 +629,40 @@
       return node;
     }
 
-    function pct(n) { return n + "%"; }
+    function pct(n) { return n == null ? "—" : n + "%"; }
 
-    function statusFor(p) {
+    function statusFor(p, opts) {
+      if (opts && opts.isConfidence && p == null) return { cls: "status-untested", text: "untested" };
+      if (p == null) return { cls: "status-untested", text: "pending" };
       if (p >= 100) return { cls: "status-done", text: "done" };
       if (p <= 0) return { cls: "status-todo", text: "todo" };
       return { cls: "status-partial", text: "partial" };
     }
 
     function fillClassFor(p) {
+      if (p == null) return "bar-fill empty";
       if (p >= 100) return "bar-fill done";
       if (p <= 0) return "bar-fill empty";
       return "bar-fill";
     }
 
+    function confidenceClsFor(c) {
+      if (c == null) return "confidence-untested";
+      if (c >= 70) return "confidence-high";
+      if (c >= 40) return "confidence-medium";
+      return "confidence-low";
+    }
+
+    function confidenceLabel(c) {
+      return c == null ? "Not yet tested" : c + " / 100";
+    }
+
     function progressBar(percent, fillClass) {
+      const safePct = percent == null ? 0 : Math.max(0, Math.min(100, percent));
       return el("div", { class: "bar-track" }, [
         el("div", {
           class: fillClass || fillClassFor(percent),
-          style: "width: " + Math.max(0, Math.min(100, percent)) + "%",
+          style: "width: " + safePct + "%",
         }),
       ]);
     }
@@ -596,9 +683,14 @@
     function renderModule(m, opts) {
       const openByDefault = !!(opts && opts.openByDefault);
       const hasIssues = m.issues && m.issues.length > 0;
-      const iconEl = hasIssues
-        ? el("span", { class: "warn-dot", title: m.issues.length + " open issue(s)" })
-        : (m.percent >= 100 ? el("span", { class: "done-dot", title: "complete" }) : null);
+      const isTestingSection = !!m.is_testing_section;
+      const hasConfidence = Object.prototype.hasOwnProperty.call(m, "confidence");
+
+      const iconEl = isTestingSection
+        ? el("span", { class: "test-dot", title: "testing section" })
+        : (hasIssues
+            ? el("span", { class: "warn-dot", title: m.issues.length + " open issue(s)" })
+            : (m.percent >= 100 ? el("span", { class: "done-dot", title: "complete" }) : null));
 
       const nameRow = el("div", { class: "module-name-row" }, [
         iconEl,
@@ -612,7 +704,7 @@
         progressBar(m.percent),
       ]);
       const header = el("div", {
-        class: "module-header",
+        class: "module-header" + (isTestingSection ? " testing-header" : ""),
         role: "button",
         tabindex: "0",
         "aria-expanded": openByDefault ? "true" : "false",
@@ -620,24 +712,37 @@
 
       const bodyChildren = [];
       if (m.submodules && m.submodules.length) {
-        bodyChildren.push(el("div", { class: "section-label" }, "Sub-items"));
+        bodyChildren.push(el("div", { class: "section-label" }, isTestingSection ? "Module confidence scores" : "Sub-items"));
         for (const s of m.submodules) {
-          const st = statusFor(s.percent);
+          const isSubConfidence = !!s.is_confidence;
+          const st = statusFor(s.percent, { isConfidence: isSubConfidence });
+          const statusText = isSubConfidence && s.percent == null ? "not yet tested" : st.text;
+          const percentLabel = isSubConfidence
+            ? (s.percent == null ? "—" : s.percent + " / 100")
+            : pct(s.percent);
           const subTop = el("div", { class: "sub-top" }, [
             el("span", { class: "sub-name" }, s.name),
-            el("span", { class: "sub-percent" }, pct(s.percent)),
-            el("span", { class: "sub-status " + st.cls }, st.text),
+            el("span", { class: "sub-percent" }, percentLabel),
+            el("span", { class: "sub-status " + st.cls }, statusText),
           ]);
           const subBar = el("div", { class: "sub-bar" }, [progressBar(s.percent)]);
           bodyChildren.push(el("div", { class: "sub" }, [subTop, subBar]));
         }
       }
+      if (hasConfidence && !isTestingSection) {
+        bodyChildren.push(el("div", { class: "section-label" }, "Test confidence"));
+        const cls = confidenceClsFor(m.confidence);
+        bodyChildren.push(el("div", { class: "confidence-row " + cls }, [
+          el("span", { class: "confidence-label" }, confidenceLabel(m.confidence)),
+          el("span", { class: "confidence-hint" }, m.confidence == null ? "run /bubbles-test to score this module" : "score / 100"),
+        ]));
+      }
       if (hasIssues) {
-        bodyChildren.push(el("div", { class: "section-label" }, "Open issues / followups"));
+        bodyChildren.push(el("div", { class: "section-label" }, isTestingSection ? "Notes" : "Open issues / followups"));
         const ul = el("ul", { class: "issues-list" });
         for (const issue of m.issues) {
           ul.appendChild(el("li", { class: "issue" }, [
-            el("span", { class: "issue-icon" }, "⚠"),
+            el("span", { class: "issue-icon" }, isTestingSection ? "ⓘ" : "⚠"),
             el("span", { html: issue }),
           ]));
         }
