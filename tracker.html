@@ -438,7 +438,7 @@
        ===================================================================== */
     const DATA = {
       generated_at: "2026-05-18",
-      source: "mid-session update: Testing section added (Module confidence scores via /bubbles-test); user-facing project description landed; Module 1 design choices frozen for upcoming autonomous-loop slice (idle-driven, per-loop auth, hybrid filter, four-panel right-rail, HR-7 scrubbing slice next)",
+      source: "mid-session update: Vision §I.7 added — Model-architecture-agnosticism elevated to foundational principle, dictates kernel design from day one; structural readiness present at 80%, deep audit pending. Plus session 19 prior: Testing section + /bubbles-test skill, user-facing project description, Module 1 design frozen for autonomous-loop slice.",
       overall_percent: 62,
       modules: [
         {
@@ -464,7 +464,7 @@
         },
         {
           name: "Vision §I — Foundational principles",
-          percent: 100,
+          percent: 97,
           submodules: [
             { name: "Self-awareness — software stack (model + plugins in persona)", percent: 100 },
             { name: "Self-awareness — live hardware (CPU/memory/disks per call)", percent: 100 },
@@ -474,8 +474,11 @@
             { name: "Single voice (persona prepend across all dispatches)", percent: 100 },
             { name: "Care as disposition (Article VI in code)", percent: 100 },
             { name: "Time-horizon discipline (substrate-swappability test)", percent: 100 },
+            { name: "Model-architecture-agnosticism (narrow capability interface, substrate-agnostic persona, runtime self-description from meta/chotu.json — kernel binds to no specific model class)", percent: 80 },
           ],
-          issues: [],
+          issues: [
+            "Model-architecture-agnosticism elevated to a foundational principle (§I.7) on 2026-05-18. Structural readiness is in place — narrow capability interface (invoke + handoff + budget), persona substrate-agnostic test, runtime self-description from meta/chotu.json. Open: kernel hasn't been audited end-to-end for architecture-specific assumptions yet (KV-cache shapes, autoregressive sampling expectations, fixed context-window semantics); no dedicated test pinning the architecture-agnostic invariant; no exercised diversity (V1 ships against one architecture).",
+          ],
         },
         {
           name: "Vision §II — Five verbs (engagement modes)",
