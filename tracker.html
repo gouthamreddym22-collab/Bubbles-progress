@@ -2,189 +2,328 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Bubbles V1 — Progress</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bubbles — Progress</title>
+<meta property="og:title" content="Bubbles — Progress">
+<meta property="og:description" content="Vision-alignment progress tracker for the Bubbles project. Each section mirrors a layer of the project's vision document.">
 <style>
   :root {
-    --bg: #0b1220;
-    --card: #131c2e;
-    --card-hover: #1a2540;
-    --border: #243149;
-    --text: #e6ecf5;
-    --text-dim: #8b9bb5;
-    --accent: #38bdf8;
-    --done: #34d399;
+    --bg: #0a1020;
+    --bg-grad-2: #0e1530;
+    --card: #131c2f;
+    --card-elevated: #182241;
+    --card-hover: #1c2849;
+    --border: #2a385a;
+    --border-bright: #3d4f7a;
+    --text: #ecf1f8;
+    --text-mid: #b1bfdb;
+    --text-dim: #7e8eb0;
+    --accent: #5eb8ff;
+    --accent-bright: #7dd3fc;
+    --done: #4ade80;
     --warn: #fbbf24;
-    --bar-bg: #0a0f1c;
+    --bar-bg: #0a0f1f;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.18);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.28);
+    --shadow-lg: 0 10px 28px rgba(0,0,0,0.36);
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
-    background: var(--bg);
+    background:
+      radial-gradient(1200px 700px at 20% -10%, rgba(94,184,255,0.07), transparent 60%),
+      radial-gradient(900px 600px at 100% 10%, rgba(125,211,252,0.05), transparent 60%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-grad-2) 100%);
+    background-attachment: fixed;
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
   }
-  .container { max-width: 880px; margin: 0 auto; padding: 36px 24px 80px; }
+  .container { max-width: 880px; margin: 0 auto; padding: 40px 22px 96px; }
 
-  header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
-  h1 { font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
-  .bubble-emoji { font-size: 22px; }
-  .subtitle { color: var(--text-dim); font-size: 12px; margin-bottom: 28px; }
+  /* === Header ============================================================ */
+  header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 6px;
+  }
+  .brand-dot {
+    width: 32px; height: 32px; border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, var(--accent-bright), var(--accent) 60%, #2a6ea8 100%);
+    box-shadow: 0 0 18px rgba(94,184,255,0.45), inset -4px -6px 10px rgba(0,0,0,0.15);
+  }
+  h1 {
+    font-size: 26px; font-weight: 650; margin: 0;
+    letter-spacing: -0.015em;
+    background: linear-gradient(180deg, var(--text) 0%, var(--text-mid) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .subtitle {
+    color: var(--text-dim); font-size: 13px;
+    margin: 6px 0 28px;
+  }
 
+  /* === Overall card ====================================================== */
   .overall-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 22px 24px; margin-bottom: 24px;
+    background: linear-gradient(180deg, var(--card-elevated) 0%, var(--card) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-md);
   }
   .overall-label {
     font-size: 11px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    margin-bottom: 12px; font-weight: 600;
   }
-  .overall-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; }
+  .overall-row {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px;
+  }
   .overall-percent {
-    font-size: 34px; font-weight: 600;
-    color: var(--accent);
+    font-size: 40px; font-weight: 650;
+    color: var(--accent-bright);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    line-height: 1;
   }
-  .overall-name { font-size: 15px; color: var(--text-dim); }
+  .overall-name { font-size: 14px; color: var(--text-mid); }
 
+  /* === Progress bars ===================================================== */
   .bar-track {
     background: var(--bar-bg);
     border-radius: 999px;
-    height: 10px;
     overflow: hidden;
     position: relative;
+    height: 8px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
   }
   .bar-fill {
-    background: linear-gradient(90deg, #38bdf8, #22d3ee);
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
     height: 100%;
     border-radius: 999px;
-    transition: width 0.4s ease;
+    transition: width 0.5s cubic-bezier(.2,.7,.2,1);
+    box-shadow: 0 0 8px rgba(94,184,255,0.45);
   }
+  .bar-fill.done {
+    background: linear-gradient(90deg, var(--done), #86efac);
+    box-shadow: 0 0 8px rgba(74,222,128,0.4);
+  }
+  .bar-fill.empty { background: var(--border); box-shadow: none; }
   .overall-card .bar-track { height: 12px; }
 
+  /* === Expand hint ======================================================== */
+  .expand-hint {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0 4px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .expand-hint .key {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--text-mid);
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  }
+
+  /* === Modules =========================================================== */
   .module {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; margin-bottom: 10px;
-    overflow: hidden; transition: background 0.15s;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s, background 0.18s;
+    box-shadow: var(--shadow-sm);
+  }
+  .module:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: var(--card-hover);
+  }
+  .module.open {
+    border-color: var(--border-bright);
+    box-shadow: var(--shadow-md);
   }
   .module-header {
-    padding: 14px 18px; cursor: pointer; user-select: none;
-    display: grid; grid-template-columns: 1fr auto; gap: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
     align-items: center;
   }
-  .module:hover .module-header { background: var(--card-hover); }
-  .module-name-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .module-name { font-weight: 500; font-size: 14.5px; }
-  .module-meta { display: flex; align-items: center; gap: 12px; }
+  .module-name-row {
+    display: flex; align-items: center; gap: 10px; min-width: 0;
+  }
+  .module-name {
+    font-weight: 550; font-size: 15px; color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .module-meta { display: flex; align-items: center; gap: 14px; }
   .module-percent {
-    color: var(--text-dim);
+    color: var(--text);
     font-variant-numeric: tabular-nums;
-    font-size: 13px;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: -0.01em;
   }
-  .module-bar { grid-column: 1 / -1; margin-top: 4px; }
-  .module-bar .bar-track { height: 5px; }
+  .module-bar { grid-column: 1 / -1; margin-top: 6px; }
+  .module-bar .bar-track { height: 6px; }
 
-  .warn-icon {
-    color: var(--warn);
-    font-size: 14px;
-    line-height: 1;
-  }
-  .done-icon {
-    color: var(--done);
-    font-size: 13px;
-    line-height: 1;
-  }
+  /* Chevron — visible expand affordance */
   .chevron {
-    color: var(--text-dim);
-    font-size: 12px;
-    transition: transform 0.15s;
-    display: inline-block;
+    color: var(--accent);
+    font-size: 18px;
+    line-height: 1;
+    width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    background: rgba(94,184,255,0.10);
+    border: 1px solid rgba(94,184,255,0.18);
+    transition: transform 0.22s cubic-bezier(.2,.7,.2,1), background 0.18s;
+    flex-shrink: 0;
   }
-  .module.open .chevron { transform: rotate(90deg); }
+  .module:hover .chevron { background: rgba(94,184,255,0.20); }
+  .module.open .chevron {
+    transform: rotate(180deg);
+    background: rgba(94,184,255,0.25);
+  }
 
+  .warn-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--warn);
+    box-shadow: 0 0 6px rgba(251,191,36,0.6);
+    flex-shrink: 0;
+  }
+  .done-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--done);
+    box-shadow: 0 0 6px rgba(74,222,128,0.55);
+    flex-shrink: 0;
+  }
+
+  /* === Module body ======================================================= */
   .module-body {
     display: none;
-    padding: 14px 18px 18px;
+    padding: 18px 20px 22px;
     border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.12);
   }
   .module.open .module-body { display: block; }
 
   .section-label {
     font-size: 10.5px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin: 4px 0 8px;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    margin: 0 0 12px;
+    font-weight: 600;
   }
+  .section-label + .section-label { margin-top: 18px; }
+
+  /* === Submodule rows (with progress bar each) =========================== */
   .sub {
-    display: grid; grid-template-columns: 1fr 56px 70px;
-    gap: 12px; align-items: center;
-    padding: 7px 0;
+    padding: 10px 0 12px;
     border-bottom: 1px solid var(--border);
-    font-size: 13px;
   }
   .sub:last-of-type { border-bottom: none; }
-  .sub-name { color: var(--text); }
+  .sub-top {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .sub-name {
+    color: var(--text-mid);
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
   .sub-percent {
-    color: var(--text-dim);
+    color: var(--text);
     font-variant-numeric: tabular-nums;
     text-align: right;
-    font-size: 12px;
+    font-size: 12.5px; font-weight: 600;
+    letter-spacing: -0.01em;
+    min-width: 38px;
   }
-  .sub-status { text-align: right; font-size: 12px; }
+  .sub-status {
+    text-align: right;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    min-width: 56px;
+  }
   .status-done { color: var(--done); }
-  .status-partial { color: var(--accent); }
+  .status-partial { color: var(--accent-bright); }
   .status-todo { color: var(--text-dim); }
 
+  .sub-bar { padding: 0 0; }
+  .sub-bar .bar-track { height: 4px; }
+
+  /* === Issues ============================================================ */
   .issues-list { margin: 0; padding: 0; list-style: none; }
   .issue {
     display: flex; align-items: flex-start; gap: 10px;
-    padding: 6px 0;
-    font-size: 13px; color: var(--text);
+    padding: 8px 0;
+    font-size: 13px; color: var(--text-mid);
     line-height: 1.5;
+    border-bottom: 1px solid var(--border);
   }
+  .issue:last-of-type { border-bottom: none; }
   .issue-icon {
     color: var(--warn);
     flex-shrink: 0;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.5;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
-  .roadmap {
-    margin-top: 28px; padding: 18px 22px;
-    background: var(--card); border: 1px dashed var(--border);
-    border-radius: 12px;
-  }
-  .roadmap-title {
-    font-size: 11px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 10px;
-  }
-  .roadmap-item {
-    font-size: 13px; padding: 5px 0;
-    color: var(--text);
-  }
-
+  /* === Footer ============================================================ */
   footer {
-    margin-top: 28px;
+    margin-top: 36px;
     color: var(--text-dim);
-    font-size: 11.5px;
+    font-size: 12px;
     text-align: center;
+    line-height: 1.7;
   }
-  footer .source-path { font-family: ui-monospace, Consolas, monospace; }
+  footer a {
+    color: var(--text-mid);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border-bright);
+  }
+  footer a:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+  /* Small screens */
+  @media (max-width: 540px) {
+    .container { padding: 28px 16px 80px; }
+    h1 { font-size: 22px; }
+    .overall-percent { font-size: 32px; }
+    .module-name { font-size: 14px; }
+    .sub-status { display: none; }
+    .sub-top { grid-template-columns: 1fr auto; }
+  }
 </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <span class="bubble-emoji">o</span>
-      <h1>Bubbles — Vision Alignment</h1>
+      <div class="brand-dot" aria-hidden="true"></div>
+      <h1>Bubbles — Progress</h1>
     </header>
     <div class="subtitle" id="subtitle"></div>
 
     <div class="overall-card">
-      <div class="overall-label">Vision-alignment readiness</div>
+      <div class="overall-label">Overall progress</div>
       <div class="overall-row">
         <span class="overall-percent" id="overall-percent">0%</span>
         <span class="overall-name">across vision sections + V1 ship bar</span>
@@ -192,50 +331,49 @@
       <div class="bar-track"><div class="bar-fill" id="overall-bar" style="width: 0%"></div></div>
     </div>
 
-    <div id="modules"></div>
-
-    <div class="roadmap" id="roadmap-section" style="display: none;">
-      <div class="roadmap-title">Deferred (out of scope until V1 Windows ship is solid)</div>
-      <div id="roadmap"></div>
+    <div class="expand-hint">
+      <span class="key">Click</span>
+      <span>any section below to expand its sub-items, progress, and open issues</span>
     </div>
+
+    <div id="modules"></div>
 
     <footer id="footer"></footer>
   </div>
 
   <script>
     /* =====================================================================
-       DATA — edit this block to update the tracker.
-       Source: bubbles_kernel/CURRENT_STATE.md + Desktop/Bubbles/Vision_v1.md
-       Each section maps to a layer of the vision; percentages measure
-       ARCHITECTURAL ALIGNMENT + READINESS for that vision area, not
+       DATA — edit this block to update the tracker. Each section maps
+       to a layer of the project's vision document; percentages measure
+       architectural alignment + readiness for that vision area, not
        feature-completeness against an end-state. V1 self-contained
-       minimum is called out separately as the ship bar.
+       minimum is the ship bar.
        ===================================================================== */
     const DATA = {
       generated_at: "2026-05-17",
-      source: "bubbles_kernel/CURRENT_STATE.md + Desktop/Bubbles/Vision_v1.md @ session 17 close (commit 73fef98)",
-      overall_percent: 60,
+      source: "session in progress (commit 588f9d7) — classifier-discipline arc 4 of 5 mis-routings closed + internal vision tracker MVP shipped",
+      overall_percent: 64,
       modules: [
         {
-          name: "V1 self-contained minimum (ship bar — Goutham ditches Claude app + commercial AI)",
-          percent: 60,
+          name: "V1 self-contained minimum (ship bar — principal ditches Claude app + commercial AI)",
+          percent: 65,
           submodules: [
-            { name: "Standalone daemon — no external runtime dep", percent: 100 },
-            { name: "Local Chotu chat — no Claude-app dependency for conversation", percent: 100 },
+            { name: "Standalone daemon — no external runtime dependency", percent: 100 },
+            { name: "Local chat — no Claude-app dependency for conversation", percent: 100 },
             { name: "Standalone Electron UI — direct daemon WebSocket", percent: 100 },
-            { name: "Reasoning quality (system-level: Chotu chat-tier + Motu/Claude Code heavy-tier + plugins composed)", percent: 60 },
-            { name: "Context-switching reliability (classifier discipline — 5 known mis-routings + append-to-coding-project storage + verb-based overrides + LLM prompt revision)", percent: 40 },
+            { name: "Reasoning quality (system-level: chat-tier + heavy-tier + plugins composed)", percent: 60 },
+            { name: "Context-switching reliability (classifier discipline — 4 of 5 mis-routings closed, multi-sentence framing remaining)", percent: 75 },
             { name: "Self read + write end-to-end on natural utterances (CAT-SM-9)", percent: 70 },
             { name: "Plugin protocol smooth (spawn + execute + return + release)", percent: 90 },
             { name: "Local filesystem plugin built + exercised", percent: 0 },
             { name: "Cloud Drive plugin built + exercised", percent: 0 },
-            { name: "Dedicated test + review phase against Vision_v1.md rubric", percent: 0 },
+            { name: "Dedicated test + review phase against vision rubric", percent: 0 },
           ],
           issues: [
-            "Classifier discipline gaps: 5 known mis-routings hit repeatedly this session; recurring daily-usability friction",
-            "Reasoning quality untested against principal's real daily task mix; Chotu (Hermes-8B) sufficient for chat-tier but heavy-reasoning routing to Claude Code needs validation on Goutham's actual workload",
-            "Local filesystem plugin + Drive plugin not yet built — the two principal asks that unlock digital-autonomy + knowledge-of-Leader for V1 ship",
-            "Test + review phase planned but not yet started; that's the final gate before V1 ship. Vision_v1.md is the rubric for this phase.",
+            "Local filesystem plugin + Drive plugin not yet built — the two principal asks that unlock digital autonomy + knowledge-of-Leader for V1 ship.",
+            "Reasoning quality untested against the principal's real daily task mix — local chat-tier model sufficient, but heavy-reasoning routing to delegated substrate needs validation on production-shaped workloads.",
+            "Dedicated test + review phase planned but not yet started; that's the final gate before V1 ship. Vision document is the rubric for this phase.",
+            "Classifier discipline: 4 of 5 known mis-routings closed (append-to-coding-project storage + verb-based overrides + ambiguous-resolver + hypothetical-question matcher). One edge remains: multi-sentence framing where the modification intent is in a non-first sentence.",
           ],
         },
         {
@@ -257,61 +395,60 @@
           name: "Vision §II — Five verbs (engagement modes)",
           percent: 45,
           submodules: [
-            { name: "Serve — Chotu chat + CAT-CC-1 + CAT-SM-9 dispatch", percent: 70 },
+            { name: "Serve — chat + coding delegation + self-modification dispatch", percent: 70 },
             { name: "Serve — IoT / robot / external-network actuation", percent: 0 },
-            { name: "Anticipate — Chotu reasoning over self-description", percent: 60 },
+            { name: "Anticipate — reasoning over self-description", percent: 60 },
             { name: "Anticipate — Bubbles' own resource/security needs surface (pressure preamble, refusal hint)", percent: 75 },
             { name: "Anticipate — autonomous threat scrubbing of Leader data", percent: 0 },
-            { name: "Guide — Chotu surfaces concerns (Article VI 'once')", percent: 80 },
-            { name: "Safeguard — kernel state protection (HR-9..HR-12)", percent: 100 },
+            { name: "Guide — surfaces concerns (Article VI 'once')", percent: 80 },
+            { name: "Safeguard — kernel state protection (Hard Rules 9–12)", percent: 100 },
             { name: "Safeguard — Leader-facing threat protection (financial, social, etc.)", percent: 0 },
-            { name: "Represent — basic delegation via Claude Code", percent: 30 },
+            { name: "Represent — basic delegation via Claude Code substrate", percent: 30 },
             { name: "Represent — per-domain authorization framework", percent: 0 },
           ],
           issues: [
-            "Five verbs cover Bubbles' OWN state well (Serve/Anticipate/Safeguard via HR-9..HR-12 + scheduler); Leader-facing coverage requires data-stream plugins (financial, social, email, calendar) not yet built",
-            "Represent has no per-domain authorization framework — every represented op currently equivalent to general delegation",
+            "Five verbs cover Bubbles' own state well (Serve/Anticipate/Safeguard via Hard Rules + scheduler); Leader-facing coverage requires data-stream plugins (financial, social, email, calendar) not yet built.",
+            "Represent has no per-domain authorization framework — every represented op is currently equivalent to general delegation.",
           ],
         },
         {
           name: "Vision §III — Capability scope readiness",
           percent: 25,
           submodules: [
-            { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 80 },
-            { name: "Knowledge-of-Leader (principal preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
+            { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 85 },
+            { name: "Knowledge-of-Leader (preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
             { name: "Digital autonomy / OS-level file & comms access", percent: 0 },
-            { name: "Autonomous-loop infrastructure (trigger + principal-auth gate + Vision_v1.md as filter)", percent: 10 },
-            { name: "Autonomous loop — self-update (chotu/motu/plugin upgrade scan, filtered by Vision criteria)", percent: 0 },
+            { name: "Autonomous-loop infrastructure (trigger + principal-auth gate + vision-doc as filter)", percent: 10 },
+            { name: "Autonomous loop — self-update (substrate/plugin upgrade scan, filtered by vision criteria)", percent: 0 },
             { name: "Autonomous loop — threat scrubbing (calibrated against §II Safeguard)", percent: 0 },
             { name: "Autonomous loop — ML training (justified against five-verb framework)", percent: 0 },
-            { name: "Resource-request loop (needs surfaced with Vision-vector justification)", percent: 15 },
+            { name: "Resource-request loop (needs surfaced with vision-vector justification)", percent: 15 },
             { name: "Cross-platform (PC + phone + future devices) sync", percent: 0 },
             { name: "Federation mint + multi-bubble coordination", percent: 0 },
           ],
           issues: [
-            "Classifier discipline arc has 5 known defects (the full fix is the next major slice)",
-            "Knowledge-of-Leader minimal — friendly_name + manual topics + projects today; needs structured profile (relationships, finances, businesses, goals, exposures)",
-            "Autonomous-loop infrastructure has the safety primitive (CAT-SM-9 can be invoked autonomously) but no trigger mechanism, scheduler, or scan implementation yet",
+            "Knowledge-of-Leader minimal — friendly_name + manual topics + projects today; needs structured profile (relationships, finances, businesses, goals, exposures).",
+            "Autonomous-loop infrastructure has the safety primitive (self-modification can be invoked autonomously) but no trigger mechanism, scheduler, or scan implementation yet.",
           ],
         },
         {
           name: "Vision §IV — Growth & continuity readiness",
           percent: 50,
           submodules: [
-            { name: "Substrate-swappability (Chotu config + persona-agnostic test)", percent: 100 },
-            { name: "Self-modification governance (CAT-SM-9 + HR-9..HR-12 + audit)", percent: 100 },
-            { name: "Resource budgeting (op_scheduler admission + critical-pressure refusal)", percent: 100 },
-            { name: "Local-first architecture (kernel + Chotu run offline)", percent: 90 },
-            { name: "Machine-agnostic platform (Win/Linux/Mac/ARM/future)", percent: 30 },
+            { name: "Substrate-swappability (chat-model config + persona-agnostic test)", percent: 100 },
+            { name: "Self-modification governance (Hard Rules 9–12 + audit)", percent: 100 },
+            { name: "Resource budgeting (op-scheduler admission + critical-pressure refusal)", percent: 100 },
+            { name: "Local-first architecture (kernel + chat run offline)", percent: 90 },
+            { name: "Machine-agnostic platform (Win / Linux / Mac / ARM / future)", percent: 30 },
             { name: "Cloud-augmented architecture (when authorized)", percent: 10 },
             { name: "Principal-authorized resource acquisition path", percent: 30 },
             { name: "Federation as resource-pool propagation (multi-device pool)", percent: 0 },
             { name: "Backup / failsafe (cross-device, cloud)", percent: 0 },
           ],
           issues: [
-            "Machine-agnostic platform: Windows works; Linux/Mac unproven; npm.cmd defect this session shows OS-specific quirks still surface. Vision adds this as a hard requirement; deferrable but architecturally tracked.",
-            "Cloud architecture not built — V1 is local-only by design, but vision is local-first cloud-augmented; no surface yet for cloud-augmented ops",
-            "Resource acquisition: Bubbles can SURFACE needs (pressure preamble, refusal hint, /system_state, /scheduler) but can't request/acquire — no path between 'need surfaced' and 'principal provisions' yet",
+            "Machine-agnostic platform: Windows works; Linux/Mac unproven; OS-specific quirks still surface. Vision adds this as a hard requirement; deferrable but architecturally tracked.",
+            "Cloud architecture not built — V1 is local-only by design, but vision is local-first cloud-augmented; no surface yet for cloud-augmented ops.",
+            "Resource acquisition: Bubbles can surface needs (pressure preamble, refusal hint, system-state + scheduler endpoints) but can't request/acquire — no path between 'need surfaced' and 'principal provisions' yet.",
             "Federation as resource-pool propagation: zero today. Vision frames this as Bubbles spreading to any authorized hardware (the 'virus, in the propagation sense' framing) — each new device pools its compute/storage/sensors into shared resources.",
             "Backup / failsafe: zero coverage. Single-machine state today.",
           ],
@@ -325,16 +462,16 @@
             { name: "Append-only state (audit, succession, conversation log)", percent: 100 },
             { name: "Cat 3 always principal-authorized", percent: 100 },
             { name: "Cross-AI auditor anchors in source comments", percent: 90 },
-            { name: "Tests pin invariants (1078 tests as of session 17 close)", percent: 100 },
+            { name: "Tests pin invariants (1146 tests, zero failures)", percent: 100 },
             { name: "UI excellence across every surface (slick + smooth, all platforms)", percent: 40 },
-            { name: "UI right-rail surfacing /system_state + /scheduler (visible self-awareness)", percent: 0 },
-            { name: "Plugin shim install runbook (claude.cmd at state/plugins/.../bin/ on fresh bubbles)", percent: 0 },
-            { name: "Internal vision tracker (kernel sub-program, separate from this desktop tracker — pullable on demand + weights what Bubbles surfaces)", percent: 5 },
+            { name: "UI right-rail surfacing system-state + scheduler (visible self-awareness)", percent: 0 },
+            { name: "Plugin shim install runbook", percent: 0 },
+            { name: "Internal vision tracker (kernel sub-program — pullable on demand; surfacing-influence deferred)", percent: 50 },
           ],
           issues: [
             "UI excellence: PC Electron shell is functional but not yet polished (basic styling, no animations, no skeleton states, no perception-threshold loading); mobile + companion surfaces at 0%. Below the bar set by the vision — needs a dedicated polish slice on PC + design system before mobile builds.",
-            "`bubbles l3-watch` auto-launch defect (session 15 carryover) — process not coming up reliably on daemon start; not investigated yet.",
-            "Git config wiped — both local + global empty despite prior successful commits; root cause unknown. Reproducibility risk for future commits.",
+            "Plugin shim install runbook: fresh installs need a shim placed at a documented path; the runbook isn't written yet.",
+            "Long-standing auto-launch defect for the L3 watcher — process not coming up reliably on daemon start; not investigated yet.",
           ],
         },
         {
@@ -346,12 +483,11 @@
             { name: "Multi-generational lineage (Article III, V, VIII anchored)", percent: 30 },
             { name: "Adversarial-AI threat model (privacy-by-construction)", percent: 15 },
             { name: "Commercial Bubbles SaaS subset (derivative product — templated from this codebase at build time; licensed un-abliterated models, server-held state)", percent: 0 },
-            { name: "Machine-agnostic platform validation (Linux + Mac builds + boot tests; ARM/embedded later — Vision §IV is the property, this submodule tracks the validation work)", percent: 0 },
+            { name: "Machine-agnostic platform validation (Linux + Mac builds + boot tests; ARM/embedded later — §IV is the property, this submodule tracks the validation work)", percent: 0 },
           ],
           issues: [],
         },
       ],
-      roadmap_asks: [],
     };
     /* ===== /DATA ===== */
 
@@ -377,26 +513,45 @@
     function pct(n) { return n + "%"; }
 
     function statusFor(p) {
-      if (p === 100) return { cls: "status-done", text: "done" };
-      if (p === 0) return { cls: "status-todo", text: "todo" };
+      if (p >= 100) return { cls: "status-done", text: "done" };
+      if (p <= 0) return { cls: "status-todo", text: "todo" };
       return { cls: "status-partial", text: "partial" };
+    }
+
+    function fillClassFor(p) {
+      if (p >= 100) return "bar-fill done";
+      if (p <= 0) return "bar-fill empty";
+      return "bar-fill";
+    }
+
+    function progressBar(percent, fillClass) {
+      return el("div", { class: "bar-track" }, [
+        el("div", {
+          class: fillClass || fillClassFor(percent),
+          style: "width: " + Math.max(0, Math.min(100, percent)) + "%",
+        }),
+      ]);
     }
 
     function renderHeader() {
       document.getElementById("overall-percent").textContent = pct(DATA.overall_percent);
       document.getElementById("overall-bar").style.width = pct(DATA.overall_percent);
+      const fillEl = document.getElementById("overall-bar");
+      fillEl.className = fillClassFor(DATA.overall_percent);
       const subtitle = document.getElementById("subtitle");
-      subtitle.textContent = "Snapshot from " + DATA.source + ".";
+      subtitle.textContent = "Snapshot: " + DATA.source;
       document.getElementById("footer").innerHTML =
-        "Last updated: " + DATA.generated_at +
-        " &middot; Edit <span class=\"source-path\">C:\\Users\\Gowtham\\bubbles_tracker\\tracker.html</span> to refresh.";
+        "Last updated " + DATA.generated_at +
+        " &middot; " +
+        "<a href=\"https://github.com/gouthamreddym22-collab/Bubbles-progress\" target=\"_blank\" rel=\"noopener\">view source on GitHub</a>";
     }
 
-    function renderModule(m) {
+    function renderModule(m, opts) {
+      const openByDefault = !!(opts && opts.openByDefault);
       const hasIssues = m.issues && m.issues.length > 0;
       const iconEl = hasIssues
-        ? el("span", { class: "warn-icon", title: m.issues.length + " open issue(s)" }, "⚠")
-        : (m.percent === 100 ? el("span", { class: "done-icon", title: "complete" }, "✓") : null);
+        ? el("span", { class: "warn-dot", title: m.issues.length + " open issue(s)" })
+        : (m.percent >= 100 ? el("span", { class: "done-dot", title: "complete" }) : null);
 
       const nameRow = el("div", { class: "module-name-row" }, [
         iconEl,
@@ -404,29 +559,34 @@
       ]);
       const meta = el("div", { class: "module-meta" }, [
         el("span", { class: "module-percent" }, pct(m.percent)),
-        el("span", { class: "chevron" }, "›"),
+        el("span", { class: "chevron", title: "expand / collapse" }, "▾"),
       ]);
       const bar = el("div", { class: "module-bar" }, [
-        el("div", { class: "bar-track" }, [
-          el("div", { class: "bar-fill", style: "width: " + m.percent + "%" }),
-        ]),
+        progressBar(m.percent),
       ]);
-      const header = el("div", { class: "module-header" }, [nameRow, meta, bar]);
+      const header = el("div", {
+        class: "module-header",
+        role: "button",
+        tabindex: "0",
+        "aria-expanded": openByDefault ? "true" : "false",
+      }, [nameRow, meta, bar]);
 
       const bodyChildren = [];
       if (m.submodules && m.submodules.length) {
-        bodyChildren.push(el("div", { class: "section-label" }, "Sub-modules"));
+        bodyChildren.push(el("div", { class: "section-label" }, "Sub-items"));
         for (const s of m.submodules) {
           const st = statusFor(s.percent);
-          bodyChildren.push(el("div", { class: "sub" }, [
+          const subTop = el("div", { class: "sub-top" }, [
             el("span", { class: "sub-name" }, s.name),
             el("span", { class: "sub-percent" }, pct(s.percent)),
             el("span", { class: "sub-status " + st.cls }, st.text),
-          ]));
+          ]);
+          const subBar = el("div", { class: "sub-bar" }, [progressBar(s.percent)]);
+          bodyChildren.push(el("div", { class: "sub" }, [subTop, subBar]));
         }
       }
       if (hasIssues) {
-        bodyChildren.push(el("div", { class: "section-label", style: "margin-top: 14px;" }, "Open issues / followups"));
+        bodyChildren.push(el("div", { class: "section-label" }, "Open issues / followups"));
         const ul = el("ul", { class: "issues-list" });
         for (const issue of m.issues) {
           ul.appendChild(el("li", { class: "issue" }, [
@@ -438,28 +598,34 @@
       }
       const body = el("div", { class: "module-body" }, bodyChildren);
 
-      const root = el("div", { class: "module" }, [header, body]);
-      header.addEventListener("click", function () { root.classList.toggle("open"); });
+      const root = el("div", { class: "module" + (openByDefault ? " open" : "") }, [header, body]);
+
+      function toggle() {
+        const willOpen = !root.classList.contains("open");
+        root.classList.toggle("open");
+        header.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      }
+      header.addEventListener("click", toggle);
+      header.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      });
       return root;
     }
 
     function renderModules() {
       const host = document.getElementById("modules");
-      for (const m of DATA.modules) host.appendChild(renderModule(m));
-    }
-
-    function renderRoadmap() {
-      if (!DATA.roadmap_asks || !DATA.roadmap_asks.length) return;
-      document.getElementById("roadmap-section").style.display = "block";
-      const host = document.getElementById("roadmap");
-      for (const r of DATA.roadmap_asks) {
-        host.appendChild(el("div", { class: "roadmap-item", html: "&bull; " + r }));
-      }
+      DATA.modules.forEach(function (m, idx) {
+        // Open the first module (V1 ship bar) by default — gives
+        // visitors an immediate example of the expand affordance.
+        host.appendChild(renderModule(m, { openByDefault: idx === 0 }));
+      });
     }
 
     renderHeader();
     renderModules();
-    renderRoadmap();
   </script>
 </body>
 </html>

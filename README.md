@@ -1,12 +1,12 @@
 # Bubbles — Progress Tracker
 
-Hand-maintained single-file HTML view of where the [Bubbles](https://github.com/) project stands against its [Vision document](https://github.com/) (`Vision_v1.md`).
+Single-file HTML view of where the Bubbles project stands against its vision document. Each section mirrors a layer of that vision; percentages measure architectural alignment + readiness, not feature-completeness against an end-state.
 
-This is the **principal's external progress view** — not Bubbles' own internal vision tracker (that lives inside the kernel as a separate sub-program). Each section here mirrors a layer of Vision_v1.md; percentages measure architectural alignment + readiness, not feature-completeness against an end-state.
+The principal's external progress view — separate from Bubbles' internal vision tracker, which is a kernel-side sub-program with its own state.
 
 ## Live
 
-GitHub Pages serves `index.html` (a 0-second redirect to `tracker.html`) at the repo's Pages URL.
+Hosted via GitHub Pages — `index.html` redirects to `tracker.html`.
 
 ## Local view
 
@@ -15,7 +15,6 @@ Open `tracker.html` directly in any browser — no server needed. All data lives
 ## Updating
 
 ```
-# from C:\Users\Gowtham\bubbles_tracker\
 git add tracker.html
 git commit -m "tracker: <what changed>"
 git push
