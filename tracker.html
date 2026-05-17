@@ -437,9 +437,9 @@
        minimum is the ship bar.
        ===================================================================== */
     const DATA = {
-      generated_at: "2026-05-18",
-      source: "mid-session update: Vision §I.7 added — Model-architecture-agnosticism elevated to foundational principle, dictates kernel design from day one; structural readiness present at 80%, deep audit pending. Plus session 19 prior: Testing section + /bubbles-test skill, user-facing project description, Module 1 design frozen for autonomous-loop slice.",
-      overall_percent: 62,
+      generated_at: "2026-05-18 (session 19 recalibration)",
+      source: "session 19 close (mid-session recalibration): Module 1..3 recalibrated after Vision deltas (§I.7 architecture-agnosticism elevated, §III self-security audit + ML-self-training added, §IV three-axis hard requirements). Module 1 autonomous-loop foundation + first concrete loop + daemon wiring + HR-7 scrubbing layer + pending-tasks store shipped. Module 2 gains architecture-agnosticism submodule. Module 3 gains constitutional-invariants-as-refusals submodule.",
+      overall_percent: 56,
       modules: [
         {
           name: "V1 self-contained minimum (ship bar — principal ditches Claude app + commercial AI)",
@@ -502,32 +502,37 @@
         },
         {
           name: "Module 1 — Capability scope readiness",
-          percent: 25,
+          percent: 30,
           submodules: [
             { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 85 },
             { name: "Knowledge-of-Leader (preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
             { name: "Plugin discovery + registry (foundation for installing new plugins post-V1 — first concrete need: PC filesystem + Drive plugins)", percent: 0 },
             { name: "Resource-request loop (needs surfaced with vision-vector justification)", percent: 15 },
-            { name: "Internal vision tracker — autonomous-loop sub-program for vision-grounded request + warning surfacing (MVP read surface exists; full autonomous rebuild pending)", percent: 15 },
-            { name: "Autonomous-loop infrastructure (trigger + principal-auth gate + vision-doc as filter) — PREREQUISITE for the loops below", percent: 10 },
+            { name: "Internal vision tracker — autonomous-loop sub-program (autonomous arm shipped slice 17.3; chat-query surface re-sourced from runtime signals slice 17.5; multi-signal expansion + auto-resolution pending)", percent: 80 },
+            { name: "Autonomous-loop infrastructure (trait + supervisor + per-loop config + idle detection + daemon spawn) — foundation complete; HR-7 scrubbing layer landed unblocking plugin-touching loops", percent: 90 },
+            { name: "Pending-tasks kernel store (encrypted lifecycle + deadlines + paused-op refs) — kernel side complete; chat-resume path + UI consumption pending", percent: 50 },
             { name: "Digital autonomy / OS-level file & comms access", percent: 0 },
-            { name: "Autonomous loop — self-update (substrate/plugin upgrade scan, filtered by vision criteria)", percent: 0 },
-            { name: "Autonomous loop — threat scrubbing (calibrated against §II Safeguard)", percent: 0 },
-            { name: "Autonomous loop — ML training (justified against five-verb framework)", percent: 0 },
+            { name: "Autonomous loop — self-update (substrate/plugin upgrade scan, filtered by vision criteria)", percent: 5 },
+            { name: "Autonomous loop — threat scrubbing (calibrated against §II Safeguard)", percent: 5 },
+            { name: "Autonomous loop — self-security audit (kernel-internal integrity checks — state hashes, audit-log chain, signatures, CVEs, drift; per §III amendment session 19)", percent: 5 },
+            { name: "Autonomous loop — ML training (direct model update + self-training on idle compute; per §III amendment session 19)", percent: 0 },
             { name: "Federation mint + multi-bubble coordination", percent: 0 },
           ],
           issues: [
             "Knowledge-of-Leader minimal — friendly_name + manual topics + projects today; needs structured profile (relationships, finances, businesses, goals, exposures).",
-            "Autonomous-loop infrastructure has the safety primitive (self-modification can be invoked autonomously) but no trigger mechanism, scheduler, or scan implementation yet. PREREQUISITE for the four loops below.",
-            "Internal vision tracker MVP (pullable-on-demand chat report) was built first as a fractional step toward the real thing: an autonomous-loop sub-program that proactively surfaces vision-grounded requests + warnings. Full rebuild deferred to its slot in this section's build order; current 15% reflects only the read surface.",
+            "Autonomous-loop infrastructure foundation closed (slices 17.1–17.4): trait, supervisor, idle detection, per-loop config, daemon wiring all shipped. Loops default disabled; principal opts in by editing state/autonomous_loops.json.",
+            "HR-7 scrubbing layer landed (slice 17.6) — plugin invocations now refuse-default for untagged or tier-mismatched parameters. Unblocks self-update / threat-scrubbing / self-security loops which all touch plugins.",
+            "VisionTrackerLoop is concrete loop #1 (memory + disk warnings, dedup via notification store). Self-update / threat-scrubbing / self-security audit / ML training are each their own follow-up slice now that scrubbing is in place.",
+            "Pending-tasks kernel store complete (slice 17.7) — task-resume chat path + daemon HTTP endpoints + right-rail UI panel are follow-ups.",
           ],
           confidence: null,
         },
         {
           name: "Module 2 — Growth & continuity readiness",
-          percent: 50,
+          percent: 57,
           submodules: [
             { name: "Substrate-swappability (chat-model config + persona-agnostic test)", percent: 100 },
+            { name: "Model-architecture-agnosticism (capability interface narrow — invoke + handoff + budget; no transformer-specific assumptions; per §I.7 + §IV; structural readiness in place, deep audit pending)", percent: 80 },
             { name: "Self-modification governance (Hard Rules 9–12 + audit)", percent: 100 },
             { name: "Resource budgeting (op-scheduler admission + critical-pressure refusal)", percent: 100 },
             { name: "Local-first architecture (kernel + chat run offline)", percent: 90 },
@@ -546,13 +551,14 @@
         },
         {
           name: "Module 3 — Operating disciplines",
-          percent: 82,
+          percent: 73,
           submodules: [
             { name: "Graceful degradation (refuse loudly, no silent fallback)", percent: 100 },
             { name: "Refuse-with-reason (structured failure surface in chat + audit)", percent: 100 },
             { name: "Append-only state (audit, succession, conversation log)", percent: 100 },
             { name: "Cat 3 always principal-authorized", percent: 100 },
-            { name: "Tests pin invariants (1163 tests, zero failures)", percent: 100 },
+            { name: "Tests pin invariants (1250+ tests, zero failures)", percent: 100 },
+            { name: "Constitutional invariants → kernel refusals (every Hard Rule + Article enforced at every choke point with citation + pinning test) — HR-1, HR-2, HR-7, HR-9..HR-12 fully enforced; HR-3, HR-4, HR-5, HR-6, HR-8 + most Articles need coverage audit via /bubbles-test", percent: 60 },
             { name: "Operational runbooks (plugin install, recovery, maintenance) — plugin shim runbook landed; broader coverage pending", percent: 40 },
             { name: "Cross-AI auditor anchors in source comments", percent: 90 },
             { name: "UI excellence as discipline (slick + smooth bar — implementation across surfaces lives in the cross-platform module)", percent: 40 },
@@ -560,6 +566,7 @@
           ],
           issues: [
             "UI excellence: PC Electron shell is functional but not yet polished (basic styling, no animations, no skeleton states, no perception-threshold loading); mobile + companion surfaces at 0%. Below the bar set by the vision — needs a dedicated polish slice on PC + design system before mobile builds.",
+            "Constitutional invariant coverage: HR-7 now hard-coded at the plugin invocation boundary (slice 17.6); HR-9..HR-12 fully enforced via CAT-SM-9 dispatch + audit. Remaining HRs + most Articles need a coverage audit — best done via /bubbles-test against each module which produces a per-HR enforcement table.",
           ],
           confidence: null,
         },
