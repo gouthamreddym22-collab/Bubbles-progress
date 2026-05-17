@@ -66,6 +66,25 @@
     margin: 6px 0 28px;
   }
 
+  /* === About card ======================================================== */
+  .about-card {
+    background: linear-gradient(180deg, rgba(94,184,255,0.04) 0%, rgba(19,28,47,0.4) 100%);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+  }
+  .about-card p {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .about-card p + p { margin-top: 10px; }
+  .about-card strong { color: var(--text); font-weight: 650; }
+  .about-card em { color: var(--accent-bright); font-style: normal; }
+
   /* === Overall card ====================================================== */
   .overall-card {
     background: linear-gradient(180deg, var(--card-elevated) 0%, var(--card) 100%);
@@ -322,6 +341,20 @@
     </header>
     <div class="subtitle" id="subtitle"></div>
 
+    <div class="about-card">
+      <p>
+        <strong>Bubbles</strong> is a personal AI agent built for decades of single-principal use.
+        The kernel is a Rust-based local-first daemon with model-swappable substrates, an append-only
+        audit log, and a strict safety rail for self-modification. Vision-aligned, cross-AI auditable,
+        designed to outlast any single model, platform, or cloud provider.
+      </p>
+      <p>
+        This tracker measures how far the architecture has progressed against the project's vision
+        document. Percentages reflect <em>architectural alignment + readiness</em>, not feature
+        completeness against an end-state.
+      </p>
+    </div>
+
     <div class="overall-card">
       <div class="overall-label">Overall progress</div>
       <div class="overall-row">
@@ -351,7 +384,7 @@
        ===================================================================== */
     const DATA = {
       generated_at: "2026-05-17",
-      source: "session in progress — classifier-discipline arc fully closed (5 of 5), three defects closed; submodules reordered by step-by-step build sense; cross-platform extracted to its own module; internal vision tracker re-homed under §III as the autonomous-loop sub-program it's intended to become",
+      source: "handoff state: classifier-discipline arc fully closed (5 of 5), three open defects closed, submodules reordered by step-by-step build sense, cross-platform extracted to its own module, internal vision tracker re-homed under Module 1 as the autonomous-loop sub-program it's intended to become",
       overall_percent: 62,
       modules: [
         {
@@ -411,11 +444,12 @@
           ],
         },
         {
-          name: "Vision §III — Capability scope readiness",
+          name: "Module 1 — Capability scope readiness",
           percent: 25,
           submodules: [
             { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 85 },
             { name: "Knowledge-of-Leader (preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
+            { name: "Plugin discovery + registry (foundation for installing new plugins post-V1 — first concrete need: PC filesystem + Drive plugins)", percent: 0 },
             { name: "Resource-request loop (needs surfaced with vision-vector justification)", percent: 15 },
             { name: "Internal vision tracker — autonomous-loop sub-program for vision-grounded request + warning surfacing (MVP read surface exists; full autonomous rebuild pending)", percent: 15 },
             { name: "Autonomous-loop infrastructure (trigger + principal-auth gate + vision-doc as filter) — PREREQUISITE for the loops below", percent: 10 },
@@ -432,7 +466,7 @@
           ],
         },
         {
-          name: "Vision §IV — Growth & continuity readiness",
+          name: "Module 2 — Growth & continuity readiness",
           percent: 50,
           submodules: [
             { name: "Substrate-swappability (chat-model config + persona-agnostic test)", percent: 100 },
@@ -452,7 +486,7 @@
           ],
         },
         {
-          name: "Vision §V — Operating disciplines",
+          name: "Module 3 — Operating disciplines",
           percent: 82,
           submodules: [
             { name: "Graceful degradation (refuse loudly, no silent fallback)", percent: 100 },
@@ -460,7 +494,7 @@
             { name: "Append-only state (audit, succession, conversation log)", percent: 100 },
             { name: "Cat 3 always principal-authorized", percent: 100 },
             { name: "Tests pin invariants (1163 tests, zero failures)", percent: 100 },
-            { name: "Plugin shim install runbook (docs/plugin_shim_install.md)", percent: 100 },
+            { name: "Operational runbooks (plugin install, recovery, maintenance) — plugin shim runbook landed; broader coverage pending", percent: 40 },
             { name: "Cross-AI auditor anchors in source comments", percent: 90 },
             { name: "UI excellence as discipline (slick + smooth bar — implementation across surfaces lives in the cross-platform module)", percent: 40 },
             { name: "UI right-rail surfacing system-state + scheduler (visible self-awareness)", percent: 0 },
@@ -470,7 +504,7 @@
           ],
         },
         {
-          name: "Cross-platform presence (UI consistency + phone app + future devices)",
+          name: "Module 4 — Cross-platform presence (UI consistency + phone app + future devices)",
           percent: 10,
           submodules: [
             { name: "PC Electron shell polish (slick + smooth — applies the §V UI-excellence discipline on PC)", percent: 40 },
@@ -486,7 +520,7 @@
           ],
         },
         {
-          name: "Vision §VII — Long-term horizons (scaffolding only at V1)",
+          name: "Module 5 — Long-term horizons (scaffolding only at V1)",
           percent: 10,
           submodules: [
             { name: "Multi-generational lineage (Article III, V, VIII anchored)", percent: 30 },
