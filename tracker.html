@@ -511,7 +511,7 @@
         },
         {
           name: "Module 1 — Capability scope readiness",
-          percent: 28,
+          percent: 27,
           submodules: [
             { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 85 },
             { name: "Knowledge-of-Leader (preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
@@ -519,6 +519,7 @@
             { name: "Resource-request loop (needs surfaced with vision-vector justification)", percent: 15 },
             { name: "Internal vision tracker — autonomous-loop sub-program (autonomous arm shipped slice 17.3; chat-query surface re-sourced from runtime signals slice 17.5; multi-signal expansion + auto-resolution pending)", percent: 80 },
             { name: "Autonomous-loop infrastructure (trait + supervisor + per-loop config + idle detection + daemon spawn) — foundation complete; HR-7 scrubbing layer landed unblocking plugin-touching loops; constitutional always-on default per §III round 3 (no UI opt-in; emergency-disable preserved at kernel/file level)", percent: 92 },
+            { name: "Auto-budgeting for autonomous loops — per-loop budgets kernel-computed from resources (op_scheduler + hardware_state pressure) × usage patterns (rolling-window mean/p95/std-dev) × principal-set priority tag (high/normal/low/paused). Principal sets tags only, NEVER numeric budgets; no UI for budget numbers (exposing them would invert the architecture). patchLoopConfig's budget payload is now a transitional artifact — auto-budgeter makes it kernel-internal. Multi-slice arc: usage tracker + priority resolver + allocator + autonomous_loop tick integration. Per §III amendment session 22.", percent: 0 },
             { name: "Pending-tasks kernel store (encrypted lifecycle + deadlines + paused-op refs) — kernel side complete; chat-resume path + UI consumption pending", percent: 50 },
             { name: "Topic + project model (every utterance → topic; threshold → project graduation; project-from-day-one; per-topic pending tasks; per §III amendment 2026-05-18) — topic.rs storage + scope variants + decay shipped session 9; classifier mapping, graduation logic, project-generalization-beyond-coding pending", percent: 40 },
             { name: "Live person-context awareness — sensor plugin slots (hard awareness: location, physiology, environment) + inferred context (soft awareness: schedule, mood, behavioural baselines) for every person in the bubble (principal + protectees); architectural surface ready (plugin contract + data tier + audit + per-person scoping); concrete sensor plugins post-V1; per §III amendment 2026-05-18 round 4", percent: 5 },
@@ -559,10 +560,11 @@
         },
         {
           name: "Module 2 — Growth & continuity readiness",
-          percent: 60,
+          percent: 55,
           submodules: [
             { name: "Substrate-swappability (chat-model config + persona-agnostic test)", percent: 100 },
             { name: "Model-architecture-agnosticism (capability interface narrow — invoke + handoff + budget; no transformer-specific assumptions; per §I.7 + §IV; structural readiness in place, deep audit pending)", percent: 80 },
+            { name: "Machine-agnosticism (Win / Linux / Mac / ARM / future — kernel binds to no specific OS/arch; portable Rust APIs across kernel code; airgap.rs is the known platform-isolated exception; per §IV — sibling 'hard requirement' to substrate-swap + arch-agnostic; property + Linux + Mac builds + boot-test validation; ARM/embedded later)", percent: 15 },
             { name: "Self-modification governance (Hard Rules 9–12 + audit)", percent: 100 },
             { name: "Resource budgeting (op-scheduler admission + critical-pressure refusal)", percent: 100 },
             { name: "Local-first architecture (kernel + chat run offline)", percent: 90 },
@@ -631,12 +633,11 @@
         },
         {
           name: "Module 5 — Long-term horizons (scaffolding only at V1)",
-          percent: 10,
+          percent: 9,
           submodules: [
             { name: "Multi-generational lineage (Article III, V, VIII anchored)", percent: 30 },
             { name: "Adversarial-AI threat model (privacy-by-construction)", percent: 15 },
             { name: "Hardware-credential form factor evolves — USB-C today → NFC / RFID / secure-enclave-bound biometrics / implantable / wearable credentials over time; Constitution Article V fingerprint anchor is form-factor-independent; CredentialReader adapter is the small refactor that lets future form factors swap in (Module 2 implementation surface); per §VII amendment 2026-05-18", percent: 15 },
-            { name: "Machine-agnostic platform (Win / Linux / Mac / ARM / future) — property + Linux + Mac builds + boot-test validation; ARM/embedded later", percent: 15 },
             { name: "Live Leader-context awareness (long-term: full sensor surface — location, physiology, environment, vehicle/home telemetry, ambient audio when authorized; arch surface ready in Module 1, plugin volume post-V1; per §III amendment 2026-05-18)", percent: 5 },
             { name: "Live, persistent protection layer (sensor-mediated Safeguard scaling with awareness surface; cross-bubble emergency beacon in Module 6 is the federation arm; per §II amendment 2026-05-18)", percent: 5 },
             { name: "Commercial Bubbles SaaS subset (derivative product — templated from this codebase at build time; licensed un-abliterated models, server-held state)", percent: 0 },
