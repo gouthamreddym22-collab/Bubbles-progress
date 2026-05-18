@@ -437,13 +437,13 @@
        minimum is the ship bar.
        ===================================================================== */
     const DATA = {
-      generated_at: "2026-05-18 (session 19 recalibration #4 — protectees + person-awareness)",
-      source: "session 19 mid-session recalibration #4 after Vision §III amendment round 4: live context awareness reframed from Leader-only to every person in the bubble (principal + enrolled protectees). New §III concept 'Protectees' — persons under the bubble's protective umbrella (children, elderly parents, dependents) who receive Safeguard/Anticipate/live-awareness service but have no bubble-authority. Hard + soft awareness dimensions explicit (sensor data + inferred context). §I.1 outward awareness, §II Anticipate, §II Safeguard all expanded to cover protectees. vision_vector enum: OutwardLeaderAwareness renamed to OutwardPersonAwareness; LiveLeaderContextAwareness renamed to LivePersonContextAwareness; KnowledgeOfProtectees and ProtecteesUmbrella added. Prior rounds 1-3 deltas preserved (always-on loops, V1 bars, federation in Module 6, etc.).",
-      overall_percent: 50,
+      generated_at: "2026-05-18 (session 21 close — privacy/refusal-evasion stack + three-substrate model + boundary wrapper)",
+      source: "bubbles_kernel/CURRENT_STATE.md + Desktop/Bubbles/Vision_v1.md @ session 21 close (commit 3a1bfbb). §III heavy: privacy-scrub split into two strategies (scrub + fakes, slices 21.3 + 21.4); confabulation reframed as cross-substrate refusal-evasion proper (slice 21.5; applies to external substrates AND internal abliterated substrates with residual refusals); explicit moral-stance bullet (Bubbles never refuses on content/moral grounds — surfaces concern, principal decides); three-substrate model introduced (Chotu reasoning / Toolu structured-output-tool-call / Motu pure router); Toolu four-layer defense (grammar-constrained decoding + targeted abliteration + output verifier + confabulation runtime loop); Toolu self-training pipeline elevated to load-bearing ML-training sub-arm; kernel boundary wrapper as mandatory no-opt-out discipline (slice 21.6); Toolu output verifier landed (slice 21.7). §IV substrate-swappability section now hosts the three-substrate model. §V new op-speed discipline. Tracker cadence reverted to handoff-only (mid-session pushes suspended). Earlier slices: click-to-engage on tasks (21.1), topic→project graduation (21.2). 1282 non-daemon tests passing; daemon pre-existing parallel flake persists.",
+      overall_percent: 48,
       modules: [
         {
           name: "V1 self-contained minimum (ship bar — principal ditches Claude app + commercial AI)",
-          percent: 62,
+          percent: 64,
           submodules: [
             { name: "Standalone daemon — no external runtime dependency", percent: 100 },
             { name: "Local chat — no Claude-app dependency for conversation", percent: 100 },
@@ -452,7 +452,7 @@
             { name: "Plugin protocol smooth (spawn + execute + return + release)", percent: 90 },
             { name: "Self read + write end-to-end on natural utterances (CAT-SM-9)", percent: 70 },
             { name: "Reasoning quality (system-level: chat-tier + heavy-tier + plugins composed)", percent: 60 },
-            { name: "Topic + project navigation (every utterance → topic; UI shows title not id; instant-access topic chats; per-topic pending tasks; threshold → project graduation; project-from-day-one) — kernel topic.rs storage + scope variants done; UI surface + graduation + classifier mapping pending", percent: 25 },
+            { name: "Topic + project navigation (every utterance → topic; UI shows title not id; instant-access topic chats; per-topic pending tasks; threshold → project graduation; project-from-day-one) — slice 21.2 landed: graduate_to_coding_project + new_topic_with_project kernel primitives + graduation_signal heuristic + tasks_for_topic; 4 daemon endpoints; TopicsPane gets graduation card + per-topic pending tasks + 'Also as project' checkbox in create flow. Classifier-driven utterance→topic routing still pending.", percent: 70 },
             { name: "OS-like surface (doc + webpage preview, share-from-preview, Word/Excel/PDF/plaintext r/w) — external dependencies acceptable for V1", percent: 0 },
             { name: "Local filesystem plugin built + exercised", percent: 0 },
             { name: "Cloud Drive plugin built + exercised", percent: 0 },
@@ -511,7 +511,7 @@
         },
         {
           name: "Module 1 — Capability scope readiness",
-          percent: 25,
+          percent: 28,
           submodules: [
             { name: "Op routing infrastructure (dispatcher → classifier → router → substrate)", percent: 85 },
             { name: "Knowledge-of-Leader (preferences + topics + projects → structured store: relationships, finances, businesses, goals, exposures)", percent: 20 },
@@ -528,8 +528,10 @@
             { name: "Privacy substitution at external boundary — TWO STRATEGIES landed: opaque placeholders (privacy_scrub.rs slice 21.3) + shape-valid fakes from RFC-reserved ranges (privacy_fakes.rs slice 21.4); same detection (detect_private_spans); reverse-stitch + semantic-validity heuristic + safe-range invariants; per §III amendment 2026-05-18 + session 21 reframe", percent: 50 },
             { name: "Confabulation — cross-substrate refusal evasion (self-evolving) — applies to external AND internal abliterated substrates with residual refusals; refusal detection (4 RefusalKinds) + reframe strategies (Hypothetical/Academic/Fictional/Learned) + encrypted append-only corpus + moral-concern surfacing (never blocks, surfaces concern only); learned reframer post-V1 via §III refusal-pattern-learning loop; per §III amendment 2026-05-18 + session 21 reframe (slice 21.5)", percent: 35 },
             { name: "Bubbles never refuses on content/moral grounds — kernel refuses only on technical/safety/auth grounds (HR-1..HR-12, tiers, Cat 3); content-policy refusals are reframed past via confabulation; moral-concern surfacing structure shipped (ConcernCategory + Severity + MoralConcern type-enforced non-blocking); UI surface for principal-facing moral concerns pending; per §III amendment 2026-05-18 session 21", percent: 55 },
-            { name: "Kernel boundary wrapper — mandatory at every outbound call to non-internal substrates: applies privacy substitution (scrub or fakes) on outgoing payload + confabulation (refusal detection + reframe + retry + corpus + stitch) on response; Chotu does NOT opt in/out; load-bearing guarantee that survives every substrate swap; primitives exist (privacy_scrub + privacy_fakes + confabulation), wrapper composing them is the next structural slice; per §III amendment session 21", percent: 0 },
-            { name: "Three-substrate model (Chotu/Toolu/Motu) + tiered abliteration filter (session 21): Chotu (reasoning brain) max abliterated — hard filter, NO tool-call tradeoff because tool-call lives in Toolu; Toolu (structured-output/tool-call substrate, NEW substrate concept — today rolled into Claude Code v1, future specialized function-calling model) moderate abliteration to preserve tool-call + logic; Motu (pure router/dispatcher) N/A — not a model, no abliteration filter; plugins not filtered (refusals expected, evaded at runtime by boundary wrapper). Current Chotu (Hermes-3-8B) meets Chotu bar; fresh-genesis pin: reassess at V1 launch, may need successor. Per §III amendment session 21.", percent: 65 },
+            { name: "Kernel boundary wrapper — mandatory at every outbound call to non-internal substrates: applies privacy substitution (scrub or fakes) on outgoing payload + confabulation (refusal detection + reframe + retry + corpus + stitch) on response; Chotu does NOT opt in/out; load-bearing guarantee that survives every substrate swap. Kernel module landed (slice 21.6 src/outbound_boundary.rs) with BoundaryMode enum, call_with_boundary fn, BoundaryAudit + BoundaryOutcome + moral-concern surfacing; 14 tests covering all modes + outcomes + corpus persistence. Wiring into Toolu→Motu and daemon HTTP handlers pending. Per §III amendment session 21.", percent: 55 },
+            { name: "Three-substrate model (Chotu/Toolu/Motu) + tiered abliteration filter (session 21): Chotu (reasoning brain) max abliterated — hard filter, NO tool-call tradeoff because tool-call lives in Toolu; Toolu (structured-output/tool-call substrate, NEW substrate concept — today rolled into Claude Code v1, future specialized function-calling model) protected by four-layer defense (grammar-constrained decoding HARD candidate filter + targeted abliteration + fine-tune recovery via §III ML-training Toolu self-training sub-arm + kernel output verifier + confabulation runtime loop) so Toolu can be aggressively abliterated closer to Chotu's max; Motu (pure router/dispatcher) N/A — not a model, no abliteration filter; plugins not filtered (refusals expected, evaded at runtime by boundary wrapper). Current Chotu (Hermes-3-8B) meets Chotu bar; fresh-genesis pin: reassess at V1 launch, may need successor. Per §III amendment session 21.", percent: 60 },
+            { name: "Toolu self-training pipeline (§III ML-training sub-arm) — production ops accumulate (chotu_intent, toolu_call, outcome) tuples in encrypted append-only state/toolu_corpus/; targeted abliteration applied to tool-call-specialist base; fine-tune recovery restores tool-call accuracy on Bubbles workload; eval on held-out tuples; CAT-SM-9 substrate swap; each iteration improves both abliteration AND tool-call simultaneously. Kernel pieces: corpus storage + output verifier + outcome classification + eval-sampling helper. Per §III amendment session 21.", percent: 0 },
+            { name: "Toolu output verifier (kernel-side, deterministic code) — (chotu_intent, toolu_call) → Aligned | PassiveRefusalSuspected. Catches passive-refusal (structurally-valid but semantically-misaligned calls like no_op() / abort() / null-fielded variants) that grammar-constrained decoding cannot prevent. Sub-millisecond per check; MUST be deterministic code not a model pass per op-speed discipline. Kernel module landed (slice 21.7 src/output_verifier.rs) with three signals (NoOpFunction, EmptyArguments, NullFieldedArguments), substance-gated, 19 tests. Wiring into Toolu invocation path pending. Per §III amendment session 21.", percent: 55 },
             { name: "L2 biometric verification — standardized cross-platform suite (fingerprint/face/iris/voice via FIDO2/WebAuthn); at-least-one required + multiple optional; per §III amendment 2026-05-18 round 2", percent: 0 },
             { name: "Digital autonomy / OS-level file & comms access", percent: 0 },
             { name: "Autonomous loop — self-update (substrate/plugin upgrade scan, filtered by vision criteria)", percent: 5 },
@@ -580,7 +582,7 @@
         },
         {
           name: "Module 3 — Operating disciplines",
-          percent: 66,
+          percent: 64,
           submodules: [
             { name: "Graceful degradation (refuse loudly, no silent fallback)", percent: 100 },
             { name: "Refuse-with-reason (structured failure surface in chat + audit)", percent: 100 },
@@ -594,6 +596,7 @@
             { name: "Cross-AI auditor anchors in source comments", percent: 90 },
             { name: "UI excellence as discipline (slick + smooth bar — implementation across surfaces lives in the cross-platform module)", percent: 40 },
             { name: "Privacy substitution discipline at the external boundary, every external call (no-opt-out; only kernel boundary declares a substrate trusted enough to bypass — internal abliterated stack only) — capabilities landed (scrub + fakes); boundary wiring is the remaining gap; per §V amendment 2026-05-18", percent: 10 },
+            { name: "Op-speed discipline — fast-path/slow-path separation for the Chotu→Toolu→Motu→Plugin pipeline + boundary wrapper: deterministic verifier (not model), confabulation only on refusal, refusal-pattern cache for pre-emptive reframing, intent→call cache for common patterns, async pipelining, adaptive bypass for trusted substrates, small specialized Toolu, batch parallel plugin calls, local-first. Principal-facing metric: median op latency p50/p95/p99 (chat-input → first response token); regression triggers self-update-loop investigation. Per §V amendment session 21.", percent: 0 },
             { name: "UI right-rail surfacing system-state + scheduler (visible self-awareness)", percent: 0 },
           ],
           issues: [
@@ -607,10 +610,10 @@
         },
         {
           name: "Module 4 — Cross-platform presence (UI consistency + phone app + future devices)",
-          percent: 7,
+          percent: 14,
           submodules: [
             { name: "PC Electron shell polish (slick + smooth — applies the §V UI-excellence discipline on PC)", percent: 40 },
-            { name: "Topic + project navigation UI (title-not-id surface; instant-access topic chats; per-topic pending-task visibility on right rail; threshold → project graduation UX; project-from-day-one UX; per §0 V1 amendment 2026-05-18)", percent: 0 },
+            { name: "Topic + project navigation UI (title-not-id surface; instant-access topic chats; per-topic pending-task visibility on right rail; threshold → project graduation UX; project-from-day-one UX; per §0 V1 amendment 2026-05-18) — slice 21.2 landed: TopicView gets graduation card (suggestion banner + reasons + inline form) + per-topic Pending tasks section + 'Also as project' checkbox in create flow. Click-to-engage from right-rail Pending Tasks (slice 21.1) preloads chat with task context.", percent: 60 },
             { name: "OS-like surface (doc + webpage preview in conversation; share-from-preview; Word/Excel/PDF/plaintext/common-image r/w — external dependencies + plugin shells acceptable per §0 V1 amendment 2026-05-18)", percent: 0 },
             { name: "Shared design system + component tokens (foundation for consistent UI across platforms)", percent: 0 },
             { name: "Cross-platform sync layer (PC ↔ phone ↔ future devices)", percent: 0 },
