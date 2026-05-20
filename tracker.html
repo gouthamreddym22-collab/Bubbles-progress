@@ -407,6 +407,12 @@
         This tracker measures how far the architecture has progressed against that vision.
         Percentages reflect <em>alignment + readiness</em>, not feature completeness.
       </p>
+      <p>
+        <strong>Overall progress weighs in test confidence.</strong> Each module's bar shows
+        its raw build progress; the overall figure folds in the latest <em>/bubbles-test</em>
+        confidence per module &mdash; strong-confidence modules (&ge;80) get full credit,
+        moderate (60&ndash;79) take a 15% discount, weak or untested work takes a 30% discount.
+      </p>
     </div>
 
     <div class="overall-card">
@@ -437,13 +443,14 @@
        minimum is the ship bar.
        ===================================================================== */
     const DATA = {
-      generated_at: "2026-05-20 (session 27)",
+      generated_at: "2026-05-20 (session 29 close)",
       source: "bubbles_kernel/CURRENT_STATE.md + Desktop/Bubbles/Vision_v1.md",
-      overall_percent: 63,
+      overall_percent: 63,  // ignored at render — computed via confidence-weighted formula
       modules: [
         {
           name: "V1 self-contained minimum (ship bar)",
           percent: 72,
+          weight: 3,
           submodules: [
             { name: "Standalone daemon", percent: 100 },
             { name: "Local chat (no Claude-app dependency)", percent: 100 },
@@ -469,6 +476,7 @@
         {
           name: "Vision §I — Foundational principles",
           percent: 93,
+          weight: 3,
           submodules: [
             { name: "Self-awareness — software stack", percent: 100 },
             { name: "Self-awareness — live hardware", percent: 100 },
@@ -489,6 +497,7 @@
         {
           name: "Vision §II — Five verbs (engagement modes)",
           percent: 38,
+          weight: 2,
           submodules: [
             { name: "Safeguard — kernel state protection (Hard Rules 9–12)", percent: 100 },
             { name: "Guide — surfaces concerns (Article VI 'once')", percent: 80 },
@@ -512,6 +521,7 @@
         {
           name: "Module 1 — Capability scope readiness",
           percent: 56,
+          weight: 2,
           submodules: [
             { name: "Op routing infrastructure", percent: 90 },
             { name: "Knowledge-of-Leader (structured profile)", percent: 20 },
@@ -562,6 +572,7 @@
         {
           name: "Module 2 — Growth & continuity readiness",
           percent: 55,
+          weight: 2,
           submodules: [
             { name: "Substrate-swappability", percent: 100 },
             { name: "Model-architecture-agnosticism", percent: 80 },
@@ -586,6 +597,7 @@
         {
           name: "Module 3 — Operating disciplines",
           percent: 92,
+          weight: 3,
           submodules: [
             { name: "Graceful degradation", percent: 100 },
             { name: "Refuse-with-reason", percent: 100 },
@@ -615,6 +627,7 @@
         {
           name: "Module 4 — Cross-platform presence",
           percent: 14,
+          weight: 0,
           submodules: [
             { name: "PC Electron shell polish", percent: 40 },
             { name: "Topic + project navigation UI", percent: 60 },
@@ -636,6 +649,7 @@
         {
           name: "Module 5 — Long-term horizons (scaffolding only at V1)",
           percent: 9,
+          weight: 1,
           submodules: [
             { name: "Multi-generational lineage (Article III, V, VIII anchored)", percent: 30 },
             { name: "Adversarial-AI threat model (privacy-by-construction)", percent: 15 },
@@ -652,6 +666,7 @@
         {
           name: "Module 6 — Federation (post-V1, deferred)",
           percent: 3,
+          weight: 0,
           submodules: [
             { name: "Federation succession verification", percent: 10 },
             { name: "Seamless mint ceremony", percent: 5 },
@@ -705,6 +720,34 @@
       return node;
     }
 
+    /* ----- Test-confidence-weighted overall progress ----- */
+    /* See feedback memory: progress score includes testing confidence per module. */
+    function confidenceMultiplier(c) {
+      if (c == null) return 0.70;           // untested
+      if (c >= 80) return 1.00;             // strong confidence — full credit
+      if (c >= 60) return 0.85;             // moderate confidence — mild discount
+      return 0.70;                          // weak confidence — significant discount
+    }
+    function effectivePercent(m) {
+      if (typeof m.percent !== "number") return null;
+      return m.percent * confidenceMultiplier(m.confidence);
+    }
+    function computeOverallPercent(modules) {
+      var weightedSum = 0, totalWeight = 0;
+      for (var i = 0; i < modules.length; i++) {
+        var m = modules[i];
+        if (m.is_testing_section || m.is_timeline) continue;
+        if (typeof m.percent !== "number") continue;
+        var w = (typeof m.weight === "number") ? m.weight : 1;
+        if (w <= 0) continue;
+        var eff = effectivePercent(m);
+        if (eff == null) continue;
+        weightedSum += eff * w;
+        totalWeight += w;
+      }
+      return totalWeight === 0 ? 0 : Math.round(weightedSum / totalWeight);
+    }
+
     function pct(n) { return n == null ? "—" : n + "%"; }
 
     function statusFor(p, opts) {
@@ -744,10 +787,12 @@
     }
 
     function renderHeader() {
-      document.getElementById("overall-percent").textContent = pct(DATA.overall_percent);
-      document.getElementById("overall-bar").style.width = pct(DATA.overall_percent);
+      var computedOverall = computeOverallPercent(DATA.modules);
+      DATA.overall_percent = computedOverall;
+      document.getElementById("overall-percent").textContent = pct(computedOverall);
+      document.getElementById("overall-bar").style.width = pct(computedOverall);
       const fillEl = document.getElementById("overall-bar");
-      fillEl.className = fillClassFor(DATA.overall_percent);
+      fillEl.className = fillClassFor(computedOverall);
       const subtitle = document.getElementById("subtitle");
       subtitle.textContent = "Snapshot: " + DATA.source;
       document.getElementById("footer").innerHTML =
