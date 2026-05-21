@@ -720,16 +720,49 @@
       return node;
     }
 
-    /* ----- Test-confidence-weighted overall progress ----- */
-    /* See feedback memory: progress score includes testing confidence per module. */
+    /* ----- Test-confidence-weighted overall progress -----
+     *
+     * Policy (2026-05-21): untested modules contribute 0 to overall.
+     * The earlier 0.70-for-null multiplier inflated headline progress by
+     * treating untested the same as weakly tested; both were getting 70%
+     * credit. Now: no test pass → no contribution to the headline. Run
+     * /<project>-test to score a module and it begins counting.
+     */
     function confidenceMultiplier(c) {
-      if (c == null) return 0.70;           // untested
+      if (c == null) return 0.00;           // untested — no signal, no credit
       if (c >= 80) return 1.00;             // strong confidence — full credit
       if (c >= 60) return 0.85;             // moderate confidence — mild discount
-      return 0.70;                          // weak confidence — significant discount
+      return 0.50;                          // weak confidence (<60) — half credit
+    }
+
+    function deriveTestingPercent(m) {
+      // Testing-section overall percent is the mean of confidence scores
+      // INCLUDING untested modules as 0 (so the section's headline reflects
+      // honest test coverage, not just the average of tested modules).
+      if (!m.is_testing_section || !m.submodules) return m.percent;
+      const all = m.submodules.filter(function (s) { return s.is_confidence; });
+      if (all.length === 0) return null;
+      const sum = all.reduce(function (acc, s) {
+        return acc + (typeof s.percent === "number" ? s.percent : 0);
+      }, 0);
+      return Math.round(sum / all.length);
+    }
+
+    function testingCoverage(m) {
+      if (!m.is_testing_section || !m.submodules) return null;
+      const all = m.submodules.filter(function (s) { return s.is_confidence; });
+      if (all.length === 0) return null;
+      const tested = all.filter(function (s) { return typeof s.percent === "number"; }).length;
+      return { tested: tested, total: all.length };
     }
     function effectivePercent(m) {
       if (typeof m.percent !== "number") return null;
+      // No `confidence` field at all → not a test target (framing
+      // sections). Full credit; the policy below applies only to
+      // modules that opt into being scored.
+      if (!Object.prototype.hasOwnProperty.call(m, "confidence")) {
+        return m.percent;
+      }
       return m.percent * confidenceMultiplier(m.confidence);
     }
     function computeOverallPercent(modules) {
@@ -891,6 +924,18 @@
     function renderModules() {
       const host = document.getElementById("modules");
       DATA.modules.forEach(function (m, idx) {
+        if (m.is_testing_section) {
+          m.percent = deriveTestingPercent(m);
+          const cov = testingCoverage(m);
+          if (cov) {
+            const covLine =
+              "<b>Coverage: " + cov.tested + " of " + cov.total +
+              " modules tested</b> (" + Math.round(100 * cov.tested / cov.total) +
+              "%). Untested modules count as 0 in this section's average and " +
+              "contribute 0 to overall progress until a test pass scores them.";
+            m.issues = [covLine].concat(m.issues || []);
+          }
+        }
         // Open the first module (V1 ship bar) by default — gives
         // visitors an immediate example of the expand affordance.
         host.appendChild(renderModule(m, { openByDefault: idx === 0 }));
