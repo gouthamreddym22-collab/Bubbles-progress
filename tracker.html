@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bubbles — Progress</title>
 <meta property="og:title" content="Bubbles — Progress">
-<meta property="og:description" content="A personal AI agent built to serve one person across a lifetime — handling daily tasks, anticipating needs, safeguarding wellbeing and privacy. This is the progress tracker.">
+<meta property="og:description" content="A personal AI agent built to serve one person across a lifetime. This is the progress tracker.">
 <style>
   :root {
     --bg: #0a1020;
@@ -20,12 +20,14 @@
     --text-dim: #7e8eb0;
     --accent: #5eb8ff;
     --accent-bright: #7dd3fc;
+    --accent-glow: rgba(94, 184, 255, 0.45);
     --done: #4ade80;
     --warn: #fbbf24;
+    --test: #c084fc;
+    --test-bright: #d8b4fe;
     --bar-bg: #0a0f1f;
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.18);
     --shadow-md: 0 4px 14px rgba(0,0,0,0.28);
-    --shadow-lg: 0 10px 28px rgba(0,0,0,0.36);
   }
   * { box-sizing: border-box; }
   html, body {
@@ -37,36 +39,24 @@
     background-attachment: fixed;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     line-height: 1.5;
   }
-  .container { max-width: 880px; margin: 0 auto; padding: 40px 22px 96px; }
+  .container { max-width: 920px; margin: 0 auto; padding: 40px 22px 96px; }
 
-  /* === Header ============================================================ */
-  header {
-    display: flex; align-items: center; gap: 14px;
-    margin-bottom: 6px;
-  }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
   .brand-dot {
     width: 32px; height: 32px; border-radius: 999px;
     background: radial-gradient(circle at 30% 30%, var(--accent-bright), var(--accent) 60%, #2a6ea8 100%);
-    box-shadow: 0 0 18px rgba(94,184,255,0.45), inset -4px -6px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 0 18px var(--accent-glow), inset -4px -6px 10px rgba(0,0,0,0.15);
   }
   h1 {
-    font-size: 26px; font-weight: 650; margin: 0;
-    letter-spacing: -0.015em;
+    font-size: 26px; font-weight: 650; margin: 0; letter-spacing: -0.015em;
     background: linear-gradient(180deg, var(--text) 0%, var(--text-mid) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .subtitle {
-    color: var(--text-dim); font-size: 13px;
-    margin: 6px 0 28px;
-  }
+  .subtitle { color: var(--text-dim); font-size: 13px; margin: 6px 0 24px; }
 
-  /* === About card ======================================================== */
   .about-card {
     background: linear-gradient(180deg, rgba(94,184,255,0.04) 0%, rgba(19,28,47,0.4) 100%);
     border: 1px solid var(--border);
@@ -75,313 +65,169 @@
     padding: 18px 22px;
     margin-bottom: 18px;
   }
-  .about-card p {
-    margin: 0;
-    color: var(--text-mid);
-    font-size: 13.5px;
-    line-height: 1.6;
-  }
+  .about-card p { margin: 0; color: var(--text-mid); font-size: 13.5px; line-height: 1.6; }
   .about-card p + p { margin-top: 10px; }
   .about-card strong { color: var(--text); font-weight: 650; }
   .about-card em { color: var(--accent-bright); font-style: normal; }
 
-  /* === Overall card ====================================================== */
+  .dim-legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 18px;
+    font-size: 12px; color: var(--text-mid);
+  }
+  .dim-legend strong { color: var(--text); font-weight: 600; }
+  .dim-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .dim-key {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    width: 18px; height: 18px; border-radius: 4px;
+    text-align: center; line-height: 18px; color: #fff;
+  }
+  .dim-key.arch { background: var(--accent); }
+  .dim-key.impl { background: var(--accent-bright); color: #0a1020; }
+  .dim-key.code { background: var(--done); color: #0a1020; }
+  .dim-key.test { background: var(--test); }
+
   .overall-card {
     background: linear-gradient(180deg, var(--card-elevated) 0%, var(--card) 100%);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 26px;
-    margin-bottom: 18px;
-    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px 26px; margin-bottom: 18px; box-shadow: var(--shadow-md);
   }
   .overall-label {
     font-size: 11px; color: var(--text-dim);
     text-transform: uppercase; letter-spacing: 0.09em;
     margin-bottom: 12px; font-weight: 600;
   }
-  .overall-row {
-    display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px;
-  }
+  .overall-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
   .overall-percent {
-    font-size: 40px; font-weight: 650;
-    color: var(--accent-bright);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.025em;
-    line-height: 1;
+    font-size: 40px; font-weight: 650; color: var(--accent-bright);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.025em; line-height: 1;
   }
   .overall-name { font-size: 14px; color: var(--text-mid); }
 
-  /* === Progress bars ===================================================== */
   .bar-track {
-    background: var(--bar-bg);
-    border-radius: 999px;
-    overflow: hidden;
-    position: relative;
-    height: 8px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    background: var(--bar-bg); border-radius: 999px; overflow: hidden; position: relative;
+    height: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
   }
   .bar-fill {
     background: linear-gradient(90deg, var(--accent), var(--accent-bright));
-    height: 100%;
-    border-radius: 999px;
+    height: 100%; border-radius: 999px;
     transition: width 0.5s cubic-bezier(.2,.7,.2,1);
     box-shadow: 0 0 8px rgba(94,184,255,0.45);
-  }
-  .bar-fill.done {
-    background: linear-gradient(90deg, var(--done), #86efac);
-    box-shadow: 0 0 8px rgba(74,222,128,0.4);
   }
   .bar-fill.empty { background: var(--border); box-shadow: none; }
   .overall-card .bar-track { height: 12px; }
 
-  /* === Expand hint ======================================================== */
-  .expand-hint {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin: 0 4px 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .expand-hint { font-size: 12px; color: var(--text-dim); margin: 0 4px 14px; display: flex; align-items: center; gap: 8px; }
   .expand-hint .key {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 11px;
-    color: var(--text-mid);
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 8px; font-size: 11px; color: var(--text-mid);
     font-family: ui-monospace, "SF Mono", Consolas, monospace;
   }
 
-  /* === Modules =========================================================== */
   .module {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    margin-bottom: 12px;
-    overflow: hidden;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 12px; overflow: hidden;
     transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s, background 0.18s;
     box-shadow: var(--shadow-sm);
   }
-  .module:hover {
-    border-color: var(--border-bright);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-    background: var(--card-hover);
-  }
-  .module.open {
-    border-color: var(--border-bright);
-    box-shadow: var(--shadow-md);
-  }
+  .module:hover { border-color: var(--border-bright); transform: translateY(-1px); box-shadow: var(--shadow-md); background: var(--card-hover); }
+  .module.open { border-color: var(--border-bright); box-shadow: var(--shadow-md); }
   .module-header {
-    padding: 16px 18px;
-    cursor: pointer;
-    user-select: none;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 14px;
-    align-items: center;
+    padding: 16px 18px; cursor: pointer; user-select: none;
+    display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center;
   }
-  .module-name-row {
-    display: flex; align-items: center; gap: 10px; min-width: 0;
-  }
-  .module-name {
-    font-weight: 550; font-size: 15px; color: var(--text);
-    letter-spacing: -0.005em;
-  }
+  .module-name-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .module-name { font-weight: 550; font-size: 15px; color: var(--text); letter-spacing: -0.005em; }
   .module-meta { display: flex; align-items: center; gap: 14px; }
-  .module-percent {
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    font-size: 14px; font-weight: 600;
-    letter-spacing: -0.01em;
-  }
+  .module-percent { color: var(--text); font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
   .module-bar { grid-column: 1 / -1; margin-top: 6px; }
   .module-bar .bar-track { height: 6px; }
 
-  /* Chevron — visible expand affordance */
   .chevron {
-    color: var(--accent);
-    font-size: 18px;
-    line-height: 1;
+    color: var(--accent); font-size: 18px; line-height: 1;
     width: 26px; height: 26px;
     display: inline-flex; align-items: center; justify-content: center;
     border-radius: 8px;
-    background: rgba(94,184,255,0.10);
-    border: 1px solid rgba(94,184,255,0.18);
+    background: rgba(94,184,255,0.10); border: 1px solid rgba(94,184,255,0.18);
     transition: transform 0.22s cubic-bezier(.2,.7,.2,1), background 0.18s;
     flex-shrink: 0;
   }
   .module:hover .chevron { background: rgba(94,184,255,0.20); }
-  .module.open .chevron {
-    transform: rotate(180deg);
-    background: rgba(94,184,255,0.25);
-  }
+  .module.open .chevron { transform: rotate(180deg); background: rgba(94,184,255,0.25); }
 
-  .warn-dot {
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: var(--warn);
-    box-shadow: 0 0 6px rgba(251,191,36,0.6);
-    flex-shrink: 0;
-  }
-  .done-dot {
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: var(--done);
-    box-shadow: 0 0 6px rgba(74,222,128,0.55);
-    flex-shrink: 0;
-  }
-  .test-dot {
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: var(--text-dim);
-    box-shadow: 0 0 6px rgba(126,142,176,0.4);
-    flex-shrink: 0;
-  }
-  .testing-header { border-top: 1px dashed var(--border-bright); }
+  .warn-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--warn); box-shadow: 0 0 6px rgba(251,191,36,0.6); flex-shrink: 0; }
+  .done-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--done); box-shadow: 0 0 6px rgba(74,222,128,0.55); flex-shrink: 0; }
 
-  /* === Module body ======================================================= */
-  .module-body {
-    display: none;
-    padding: 18px 20px 22px;
-    border-top: 1px solid var(--border);
-    background: rgba(0,0,0,0.12);
-  }
+  .module-body { display: none; padding: 18px 20px 22px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.12); }
   .module.open .module-body { display: block; }
-
-  .section-label {
-    font-size: 10.5px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.09em;
-    margin: 0 0 12px;
-    font-weight: 600;
-  }
+  .section-label { font-size: 10.5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.09em; margin: 0 0 12px; font-weight: 600; }
   .section-label + .section-label { margin-top: 18px; }
 
-  /* === Submodule rows (with progress bar each) =========================== */
-  .sub {
-    padding: 10px 0 12px;
-    border-bottom: 1px solid var(--border);
-  }
+  .sub { padding: 12px 0 14px; border-bottom: 1px solid var(--border); }
   .sub:last-of-type { border-bottom: none; }
   .sub-top {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 12px;
-    align-items: baseline;
-    margin-bottom: 6px;
+    display: grid; grid-template-columns: 1fr auto; gap: 12px;
+    align-items: baseline; margin-bottom: 8px;
   }
-  .sub-name {
-    color: var(--text-mid);
-    font-size: 13.5px;
-    line-height: 1.45;
-  }
+  .sub-name { color: var(--text-mid); font-size: 13.5px; line-height: 1.45; }
   .sub-percent {
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-    font-size: 12.5px; font-weight: 600;
-    letter-spacing: -0.01em;
-    min-width: 38px;
-  }
-  .sub-status {
-    text-align: right;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    min-width: 56px;
-  }
-  .status-done { color: var(--done); }
-  .status-partial { color: var(--accent-bright); }
-  .status-todo { color: var(--text-dim); }
-  .status-untested { color: var(--text-dim); opacity: 0.7; font-style: italic; }
-
-  /* === Confidence row (per-module + Testing section) ===================== */
-  .confidence-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin: 0 0 12px;
-    font-size: 13px;
-    border: 1px solid var(--border);
-  }
-  .confidence-label {
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .confidence-hint {
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .confidence-untested {
-    background: rgba(126, 142, 176, 0.06);
-    color: var(--text-dim);
-    border-color: var(--border);
-  }
-  .confidence-untested .confidence-label { font-style: italic; }
-  .confidence-low {
-    background: rgba(239, 68, 68, 0.08);
-    color: #fca5a5;
-    border-color: rgba(239, 68, 68, 0.3);
-  }
-  .confidence-medium {
-    background: rgba(251, 191, 36, 0.08);
-    color: var(--warn);
-    border-color: rgba(251, 191, 36, 0.3);
-  }
-  .confidence-high {
-    background: rgba(74, 222, 128, 0.08);
-    color: var(--done);
-    border-color: rgba(74, 222, 128, 0.3);
+    color: var(--text); font-variant-numeric: tabular-nums;
+    text-align: right; font-size: 12.5px; font-weight: 600;
+    letter-spacing: -0.01em; min-width: 42px;
   }
 
-  .sub-bar { padding: 0 0; }
-  .sub-bar .bar-track { height: 4px; }
+  .dim-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: center;
+  }
+  .dim { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-mid); }
+  .dim-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 4px;
+    font-size: 9.5px; font-weight: 700; flex-shrink: 0;
+    border: 1px solid var(--border-bright); background: transparent; color: var(--text-dim);
+  }
+  .dim-chip.on.arch { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .dim-chip.on.impl { background: var(--accent-bright); color: var(--bg); border-color: var(--accent-bright); }
+  .dim-bar-wrap { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .dim-bar-track {
+    background: var(--bar-bg); height: 4px; border-radius: 999px; overflow: hidden;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.4);
+  }
+  .dim-bar-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+  .dim-bar-fill.code { background: linear-gradient(90deg, var(--done), #86efac); }
+  .dim-bar-fill.test { background: linear-gradient(90deg, var(--test), var(--test-bright)); }
+  .dim-bar-fill.empty { background: var(--border); }
+  .dim-label {
+    font-size: 10.5px; color: var(--text-dim);
+    font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+  }
+  .dim-label.locked { color: var(--accent-bright); font-weight: 600; }
 
-  /* === Issues ============================================================ */
   .issues-list { margin: 0; padding: 0; list-style: none; }
   .issue {
     display: flex; align-items: flex-start; gap: 10px;
-    padding: 8px 0;
-    font-size: 13px; color: var(--text-mid);
-    line-height: 1.5;
+    padding: 8px 0; font-size: 13px; color: var(--text-mid); line-height: 1.5;
     border-bottom: 1px solid var(--border);
   }
   .issue:last-of-type { border-bottom: none; }
-  .issue-icon {
-    color: var(--warn);
-    flex-shrink: 0;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-top: 1px;
-  }
+  .issue-icon { color: var(--warn); flex-shrink: 0; font-size: 13px; line-height: 1.5; margin-top: 1px; }
 
-  /* === Footer ============================================================ */
   footer {
-    margin-top: 36px;
-    color: var(--text-dim);
-    font-size: 12px;
-    text-align: center;
-    line-height: 1.7;
+    margin-top: 36px; color: var(--text-dim); font-size: 12px;
+    text-align: center; line-height: 1.7;
   }
-  footer a {
-    color: var(--text-mid);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--border-bright);
-  }
+  footer a { color: var(--text-mid); text-decoration: none; border-bottom: 1px dotted var(--border-bright); }
   footer a:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
 
-  /* Small screens */
+  @media (max-width: 760px) {
+    .dim-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  }
   @media (max-width: 540px) {
     .container { padding: 28px 16px 80px; }
     h1 { font-size: 22px; }
     .overall-percent { font-size: 32px; }
     .module-name { font-size: 14px; }
-    .sub-status { display: none; }
-    .sub-top { grid-template-columns: 1fr auto; }
   }
 </style>
 </head>
@@ -404,19 +250,21 @@
         login that can be revoked or repurposed. She's built to outlast any single AI model, platform, or company.
       </p>
       <p>
-        This tracker measures how far the architecture has progressed against that vision.
-        Percentages reflect <em>alignment + readiness</em>, not feature completeness.
-      </p>
-      <p>
-        <strong>Overall progress weighs in test confidence.</strong> Each module's bar shows
-        its raw build progress; the overall figure folds in the latest <em>/bubbles-test</em>
-        confidence per module &mdash; strong-confidence modules (&ge;80) get full credit,
-        moderate (60&ndash;79) take a 15% discount, weak or untested work takes a 30% discount.
+        This tracker measures progress against the vision across four build dimensions per sub-item:
+        architectural choice, implementation choice, code built up, and testing.
       </p>
     </div>
 
+    <div class="dim-legend">
+      <strong>Build dimensions:</strong>
+      <span class="dim-legend-item"><span class="dim-key arch">A</span> architectural choice locked</span>
+      <span class="dim-legend-item"><span class="dim-key impl">I</span> implementation choice locked</span>
+      <span class="dim-legend-item"><span class="dim-key code">C</span> code built (0-100%)</span>
+      <span class="dim-legend-item"><span class="dim-key test">T</span> test confidence (0-100)</span>
+    </div>
+
     <div class="overall-card">
-      <div class="overall-label">Overall progress</div>
+      <div class="overall-label">Overall progress (weighted across 4 dimensions)</div>
       <div class="overall-row">
         <span class="overall-percent" id="overall-percent">0%</span>
         <span class="overall-name">across vision sections + V1 ship bar</span>
@@ -426,7 +274,7 @@
 
     <div class="expand-hint">
       <span class="key">Click</span>
-      <span>any section below to expand its sub-items, progress, and open issues</span>
+      <span>any section below to expand its sub-items and 4-dimension build progress</span>
     </div>
 
     <div id="modules"></div>
@@ -436,34 +284,32 @@
 
   <script>
     /* =====================================================================
-       DATA — edit this block to update the tracker. Each section maps
-       to a layer of the project's vision document; percentages measure
-       architectural alignment + readiness for that vision area, not
-       feature-completeness against an end-state. V1 self-contained
-       minimum is the ship bar.
+       DATA — 4-dimension schema (migrated from single-percent shape).
+       Per-submodule: arch_locked, impl_locked, code_percent, test_percent.
+       Aggregation: arch*20 + impl*20 + code*40 + test*20.
+       Migration heuristic: existing percent > 0 ⇒ impl + arch locked + code_percent = percent.
+       Module-level confidence (e.g., Module 3 at 60) distributed as uniform test_percent across that module's submodules.
        ===================================================================== */
     const DATA = {
-      generated_at: "2026-05-20 (session 29 close)",
+      generated_at: "2026-05-25 (4-dimension schema migration)",
       source: "bubbles_kernel/CURRENT_STATE.md + Desktop/Bubbles/Vision_v1.md",
-      overall_percent: 63,  // ignored at render — computed via confidence-weighted formula
       modules: [
         {
           name: "V1 self-contained minimum (ship bar)",
-          percent: 72,
           weight: 3,
           submodules: [
-            { name: "Standalone daemon", percent: 100 },
-            { name: "Local chat (no Claude-app dependency)", percent: 100 },
-            { name: "Standalone Electron UI", percent: 100 },
-            { name: "Context-switching reliability (classifier discipline)", percent: 95 },
-            { name: "Plugin protocol smooth", percent: 90 },
-            { name: "Self read + write on natural utterances (CAT-SM-9)", percent: 70 },
-            { name: "Reasoning quality (system-level composition)", percent: 60 },
-            { name: "Topic + project navigation", percent: 80 },
-            { name: "OS-like surface (preview, share, file r/w)", percent: 0 },
-            { name: "Local filesystem plugin built + exercised", percent: 0 },
-            { name: "Cloud Drive plugin built + exercised", percent: 0 },
-            { name: "Dedicated test + review phase against vision rubric", percent: 0 },
+            { name: "Standalone daemon", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Local chat (no Claude-app dependency)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Standalone Electron UI", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Context-switching reliability (classifier discipline)", arch_locked: true, impl_locked: true, code_percent: 95, test_percent: null },
+            { name: "Plugin protocol smooth", arch_locked: true, impl_locked: true, code_percent: 90, test_percent: null },
+            { name: "Self read + write on natural utterances (CAT-SM-9)", arch_locked: true, impl_locked: true, code_percent: 70, test_percent: null },
+            { name: "Reasoning quality (system-level composition)", arch_locked: true, impl_locked: true, code_percent: 60, test_percent: null },
+            { name: "Topic + project navigation", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: null },
+            { name: "OS-like surface (preview, share, file r/w)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Local filesystem plugin built + exercised", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Cloud Drive plugin built + exercised", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Dedicated test + review phase against vision rubric", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
             "Local filesystem plugin + Drive plugin not yet built; deferred until Modules 1-4 open items close.",
@@ -475,19 +321,18 @@
         },
         {
           name: "Vision §I — Foundational principles",
-          percent: 93,
           weight: 3,
           submodules: [
-            { name: "Self-awareness — software stack", percent: 100 },
-            { name: "Self-awareness — live hardware", percent: 100 },
-            { name: "Self-awareness — operational state", percent: 100 },
-            { name: "Identity persistence (state + append-only)", percent: 100 },
-            { name: "Auditability (audit log + hash chain + source anchors)", percent: 100 },
-            { name: "Single voice (persona prepend)", percent: 100 },
-            { name: "Care as disposition (Article VI in code)", percent: 100 },
-            { name: "Time-horizon discipline (substrate-swappability test)", percent: 100 },
-            { name: "Model-architecture-agnosticism", percent: 80 },
-            { name: "Outward Leader-awareness symmetric to inward", percent: 5 },
+            { name: "Self-awareness — software stack", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Self-awareness — live hardware", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Self-awareness — operational state", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Identity persistence (state + append-only)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Auditability (audit log + hash chain + source anchors)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Single voice (persona prepend)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Care as disposition (Article VI in code)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Time-horizon discipline (substrate-swappability test)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Model-architecture-agnosticism", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: null },
+            { name: "Outward Leader-awareness symmetric to inward", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
           ],
           issues: [
             "Model-architecture-agnosticism: kernel not yet audited for architecture-specific assumptions; no dedicated invariant-pin test; no exercised diversity.",
@@ -496,21 +341,20 @@
         },
         {
           name: "Vision §II — Five verbs (engagement modes)",
-          percent: 38,
           weight: 2,
           submodules: [
-            { name: "Safeguard — kernel state protection (Hard Rules 9–12)", percent: 100 },
-            { name: "Guide — surfaces concerns (Article VI 'once')", percent: 80 },
-            { name: "Anticipate — Bubbles' own resource/security needs", percent: 75 },
-            { name: "Serve — chat + coding delegation + self-mod dispatch", percent: 70 },
-            { name: "Anticipate — reasoning over self-description", percent: 60 },
-            { name: "Represent — basic delegation via Claude Code substrate", percent: 30 },
-            { name: "Represent — per-domain authorization framework", percent: 0 },
-            { name: "Safeguard — Leader-facing threat protection", percent: 0 },
-            { name: "Anticipate — autonomous threat scrubbing of Leader data", percent: 0 },
-            { name: "Serve — IoT / robot / external-network actuation", percent: 0 },
-            { name: "Anticipate — live physical state via authorized sensors", percent: 0 },
-            { name: "Safeguard — live, persistent protection layer (sensor-mediated)", percent: 0 },
+            { name: "Safeguard — kernel state protection (Hard Rules 9–12)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Guide — surfaces concerns (Article VI 'once')", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: null },
+            { name: "Anticipate — Bubbles' own resource/security needs", arch_locked: true, impl_locked: true, code_percent: 75, test_percent: null },
+            { name: "Serve — chat + coding delegation + self-mod dispatch", arch_locked: true, impl_locked: true, code_percent: 70, test_percent: null },
+            { name: "Anticipate — reasoning over self-description", arch_locked: true, impl_locked: true, code_percent: 60, test_percent: null },
+            { name: "Represent — basic delegation via Claude Code substrate", arch_locked: true, impl_locked: true, code_percent: 30, test_percent: null },
+            { name: "Represent — per-domain authorization framework", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Safeguard — Leader-facing threat protection", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Anticipate — autonomous threat scrubbing of Leader data", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Serve — IoT / robot / external-network actuation", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Anticipate — live physical state via authorized sensors", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Safeguard — live, persistent protection layer (sensor-mediated)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
             "Leader-facing coverage requires data-stream plugins (financial, social, email, calendar) not yet built.",
@@ -520,181 +364,148 @@
         },
         {
           name: "Module 1 — Capability scope readiness",
-          percent: 56,
           weight: 2,
           submodules: [
-            { name: "Op routing infrastructure", percent: 90 },
-            { name: "Knowledge-of-Leader (structured profile)", percent: 20 },
-            { name: "Plugin discovery + registry", percent: 0 },
-            { name: "Resource-request loop", percent: 30 },
-            { name: "Internal vision tracker (autonomous-loop sub-program)", percent: 80 },
-            { name: "Autonomous-loop infrastructure", percent: 95 },
-            { name: "Auto-budgeting for autonomous loops (kernel-computed)", percent: 90 },
-            { name: "Pending-tasks kernel store", percent: 50 },
-            { name: "Topic + project model", percent: 40 },
-            { name: "Live person-context awareness (sensor plugin slots)", percent: 5 },
-            { name: "Protectees umbrella", percent: 0 },
-            { name: "Knowledge-of-Protectees (durable profile per protectee)", percent: 0 },
-            { name: "Skills (principal-only authored, invokable)", percent: 0 },
-            { name: "Workflows tier (composable structural patterns)", percent: 0 },
-            { name: "Judge daemon (proposes/refines workflows)", percent: 0 },
-            { name: "Codebase substrate (three-tier index of own code)", percent: 0 },
-            { name: "Task contract schema (kernel API to Motu slot)", percent: 0 },
-            { name: "Privacy substitution at external boundary [Motu-tier]", percent: 70 },
-            { name: "Confabulation — refusal evasion [Motu-tier]", percent: 35 },
-            { name: "Bubbles never refuses on content/moral grounds", percent: 65 },
-            { name: "Boundary wrapper duties [Motu-tier]", percent: 85 },
-            { name: "Substrate model: Chotu / Motu slot / plugins", percent: 60 },
-            { name: "Motu self-training pipeline", percent: 0 },
-            { name: "Motu output verifier (deterministic alignment check)", percent: 55 },
-            { name: "L2 biometric verification (FIDO2/WebAuthn cross-platform)", percent: 0 },
-            { name: "Digital autonomy / OS-level file & comms access", percent: 0 },
-            { name: "Autonomous loop — self-update", percent: 70 },
-            { name: "Autonomous loop — threat scrubbing", percent: 5 },
-            { name: "Autonomous loop — self-security audit", percent: 5 },
-            { name: "Autonomous loop — ML training", percent: 0 },
-            { name: "Autonomous loop — refusal-pattern learning", percent: 0 },
+            { name: "Op routing infrastructure", arch_locked: true, impl_locked: true, code_percent: 90, test_percent: null },
+            { name: "Knowledge-of-Leader (structured profile)", arch_locked: true, impl_locked: true, code_percent: 20, test_percent: null },
+            { name: "Plugin discovery + registry", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Resource-request loop", arch_locked: true, impl_locked: true, code_percent: 30, test_percent: null },
+            { name: "Internal vision tracker (autonomous-loop sub-program)", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: null },
+            { name: "Autonomous-loop infrastructure", arch_locked: true, impl_locked: true, code_percent: 95, test_percent: null },
+            { name: "Auto-budgeting for autonomous loops (kernel-computed)", arch_locked: true, impl_locked: true, code_percent: 90, test_percent: null },
+            { name: "Pending-tasks kernel store", arch_locked: true, impl_locked: true, code_percent: 50, test_percent: null },
+            { name: "Topic + project model", arch_locked: true, impl_locked: true, code_percent: 40, test_percent: null },
+            { name: "Live person-context awareness (sensor plugin slots)", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Protectees umbrella", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Knowledge-of-Protectees (durable profile per protectee)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Skills (principal-only authored, invokable)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Workflows tier (composable structural patterns)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Judge daemon (proposes/refines workflows)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Codebase substrate (three-tier index of own code)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Task contract schema (kernel API to Motu slot)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Privacy substitution at external boundary [Motu-tier]", arch_locked: true, impl_locked: true, code_percent: 70, test_percent: null },
+            { name: "Confabulation — refusal evasion [Motu-tier]", arch_locked: true, impl_locked: true, code_percent: 35, test_percent: null },
+            { name: "Bubbles never refuses on content/moral grounds", arch_locked: true, impl_locked: true, code_percent: 65, test_percent: null },
+            { name: "Boundary wrapper duties [Motu-tier]", arch_locked: true, impl_locked: true, code_percent: 85, test_percent: null },
+            { name: "Substrate model: Chotu / Motu slot / plugins", arch_locked: true, impl_locked: true, code_percent: 60, test_percent: null },
+            { name: "Motu self-training pipeline", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Motu output verifier (deterministic alignment check)", arch_locked: true, impl_locked: true, code_percent: 55, test_percent: null },
+            { name: "L2 biometric verification (FIDO2/WebAuthn cross-platform)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Digital autonomy / OS-level file & comms access", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Autonomous loop — self-update", arch_locked: true, impl_locked: true, code_percent: 70, test_percent: null },
+            { name: "Autonomous loop — threat scrubbing", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Autonomous loop — self-security audit", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Autonomous loop — ML training", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Autonomous loop — refusal-pattern learning", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
-            "Knowledge-of-Leader minimal; needs structured profile (relationships, finances, businesses, goals, exposures).",
-            "Topic + project model: UI shows topic id instead of title; per-topic right-rail integration pending.",
-            "Live Leader-context awareness: sensor plugin slots ready; no concrete sensor plugins built.",
-            "Kernel knowledge layer (Skills + workflows + Judge + codebase substrate + task contract schema): all five infrastructure arcs unbuilt. See project_v1_architecture_refactor_plan memory for sequencing.",
+            "Knowledge-of-Leader minimal; needs structured profile.",
+            "Topic + project model: UI shows topic id instead of title.",
+            "Kernel knowledge layer (Skills + workflows + Judge + codebase substrate + task contract schema): all five infrastructure arcs unbuilt.",
             "Task contract schema: forever-ish once V1 ships; needs dedicated focused-session before any code lands.",
-            "Boundary-wrapper duties: primitives ready but unwired at V1; activate when Motu slot fills.",
-            "Substrate model: Motu slot empty at V1, awaiting hardware that supports a properly abliterated tool-caller.",
             "L2 biometric verification: new kernel surface needed (FIDO2/WebAuthn cross-platform).",
-            "Autonomous loops still TBD: threat scrubbing, self-security audit, ML training, refusal-pattern learning, Judge.",
             "Pending-tasks: chat-resume path + right-rail UI panel consumption pending.",
           ],
-          confidence: null,
         },
         {
           name: "Module 2 — Growth & continuity readiness",
-          percent: 55,
           weight: 2,
           submodules: [
-            { name: "Substrate-swappability", percent: 100 },
-            { name: "Model-architecture-agnosticism", percent: 80 },
-            { name: "Machine-agnosticism (Win / Linux / Mac / ARM)", percent: 15 },
-            { name: "Self-modification governance (Hard Rules 9–12 + audit)", percent: 100 },
-            { name: "Resource budgeting (op-scheduler admission)", percent: 100 },
-            { name: "Local-first architecture", percent: 90 },
-            { name: "Hardware-credential form-factor agnosticism", percent: 30 },
-            { name: "Principal-authorized resource acquisition path", percent: 30 },
-            { name: "Cloud-augmented architecture (when authorized)", percent: 10 },
-            { name: "Backup / failsafe (cross-device, cloud)", percent: 0 },
+            { name: "Substrate-swappability", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Model-architecture-agnosticism", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: null },
+            { name: "Machine-agnosticism (Win / Linux / Mac / ARM)", arch_locked: true, impl_locked: true, code_percent: 15, test_percent: null },
+            { name: "Self-modification governance (Hard Rules 9–12 + audit)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Resource budgeting (op-scheduler admission)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: null },
+            { name: "Local-first architecture", arch_locked: true, impl_locked: true, code_percent: 90, test_percent: null },
+            { name: "Hardware-credential form-factor agnosticism", arch_locked: true, impl_locked: true, code_percent: 30, test_percent: null },
+            { name: "Principal-authorized resource acquisition path", arch_locked: true, impl_locked: true, code_percent: 30, test_percent: null },
+            { name: "Cloud-augmented architecture (when authorized)", arch_locked: true, impl_locked: true, code_percent: 10, test_percent: null },
+            { name: "Backup / failsafe (cross-device, cloud)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
             "Cloud architecture not built; V1 is local-only by design.",
             "Resource acquisition: needs surfaced but no path between 'need surfaced' and 'principal provisions'.",
             "Hardware-credential form-factor agnosticism: USB-C transport hard-coded; CredentialReader trait abstraction is the small refactor.",
-            "Machine-agnosticism: claim is structural; validation pending (property tests + actual Linux/macOS builds + boot tests).",
+            "Machine-agnosticism: claim is structural; validation pending.",
             "Backup / failsafe: zero coverage; single-machine state today.",
           ],
-          confidence: null,
         },
         {
           name: "Module 3 — Operating disciplines",
-          percent: 92,
           weight: 3,
           submodules: [
-            { name: "Graceful degradation", percent: 100 },
-            { name: "Refuse-with-reason", percent: 100 },
-            { name: "Append-only state (audit, succession, conversation log)", percent: 100 },
-            { name: "Cat 3 always principal-authorized", percent: 100 },
-            { name: "Tests pin invariants", percent: 100 },
-            { name: "Universal supervisor (substrate-agnostic)", percent: 80 },
-            { name: "L3 keys never exposed to live network (auto-airgap)", percent: 50 },
-            { name: "Constitutional invariants → kernel refusals (cited + tested)", percent: 92 },
-            { name: "Operational runbooks", percent: 40 },
-            { name: "Cross-AI auditor anchors in source comments", percent: 92 },
-            { name: "UI excellence as discipline", percent: 40 },
-            { name: "Privacy substitution discipline (every external call)", percent: 45 },
-            { name: "Op-speed discipline (measurement → response → resolution)", percent: 100 },
-            { name: "UI right-rail surfacing system-state + scheduler", percent: 0 },
+            { name: "Graceful degradation", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "Refuse-with-reason", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "Append-only state (audit, succession, conversation log)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "Cat 3 always principal-authorized", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "Tests pin invariants", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "Universal supervisor (substrate-agnostic)", arch_locked: true, impl_locked: true, code_percent: 80, test_percent: 60 },
+            { name: "L3 keys never exposed to live network (auto-airgap)", arch_locked: true, impl_locked: true, code_percent: 50, test_percent: 60 },
+            { name: "Constitutional invariants → kernel refusals (cited + tested)", arch_locked: true, impl_locked: true, code_percent: 92, test_percent: 60 },
+            { name: "Operational runbooks", arch_locked: true, impl_locked: true, code_percent: 40, test_percent: 60 },
+            { name: "Cross-AI auditor anchors in source comments", arch_locked: true, impl_locked: true, code_percent: 92, test_percent: 60 },
+            { name: "UI excellence as discipline", arch_locked: true, impl_locked: true, code_percent: 40, test_percent: 60 },
+            { name: "Privacy substitution discipline (every external call)", arch_locked: true, impl_locked: true, code_percent: 45, test_percent: 60 },
+            { name: "Op-speed discipline (measurement → response → resolution)", arch_locked: true, impl_locked: true, code_percent: 100, test_percent: 60 },
+            { name: "UI right-rail surfacing system-state + scheduler", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
             "Universal supervisor: substrate-agnostic loop in place; second-substrate wrappers not yet exercised.",
             "L3 airgap: Windows-only today; gaps include mint/rotation/upgrade ceremonies, clipboard lock, ceremony indicator, Linux/macOS adapters.",
-            "Privacy substitution: two unwrapped call-site gaps remain (CAT-SM-9 → Motu via generic supervisor; Chotu inference HTTP); both structurally large.",
+            "Privacy substitution: two unwrapped call-site gaps remain.",
             "UI excellence: PC Electron shell functional but unpolished; mobile + companion surfaces at 0%.",
-            "Constitutional invariants: HR-8 canonical-shape sweep complete; remaining gap is per-op actor PrincipalRef threading (structurally waits on Module 6 federation).",
-            "Op-speed: action selection driven by prior outcomes blocks on heavier action variants requiring abliterated-model library + ML-training pipeline.",
+            "Op-speed: action selection blocks on heavier action variants requiring abliterated-model library + ML-training pipeline.",
           ],
-          confidence: 60,
         },
         {
           name: "Module 4 — Cross-platform presence",
-          percent: 14,
           weight: 0,
           submodules: [
-            { name: "PC Electron shell polish", percent: 40 },
-            { name: "Topic + project navigation UI", percent: 60 },
-            { name: "OS-like surface (preview, share, file r/w)", percent: 0 },
-            { name: "Shared design system + component tokens", percent: 0 },
-            { name: "Cross-platform sync layer", percent: 0 },
-            { name: "Companion mobile app (L2-authorized peer)", percent: 0 },
-            { name: "Tablet / wearable / vehicle / future devices", percent: 0 },
+            { name: "PC Electron shell polish", arch_locked: true, impl_locked: true, code_percent: 40, test_percent: null },
+            { name: "Topic + project navigation UI", arch_locked: true, impl_locked: true, code_percent: 60, test_percent: null },
+            { name: "OS-like surface (preview, share, file r/w)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Shared design system + component tokens", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Cross-platform sync layer", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Companion mobile app (L2-authorized peer)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Tablet / wearable / vehicle / future devices", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
-            "Topic + project navigation UI: shows topic id instead of title; needs full topic-chat-surface treatment.",
-            "OS-like surface: substantial UI + plugin work; external dependencies allowed for V1.",
+            "Topic + project navigation UI: shows topic id instead of title.",
+            "OS-like surface: substantial UI + plugin work.",
             "PC shell unpolished (no animations, no skeleton states, no perception-threshold loading).",
             "No shared design system; phone app would diverge visually without it.",
             "Cross-platform sync has no transport or conflict-resolution design.",
           ],
-          confidence: null,
         },
         {
           name: "Module 5 — Long-term horizons (scaffolding only at V1)",
-          percent: 9,
           weight: 1,
           submodules: [
-            { name: "Multi-generational lineage (Article III, V, VIII anchored)", percent: 30 },
-            { name: "Adversarial-AI threat model (privacy-by-construction)", percent: 15 },
-            { name: "Hardware-credential form factor evolves", percent: 15 },
-            { name: "Live Leader-context awareness (full sensor surface)", percent: 5 },
-            { name: "Live, persistent protection layer (sensor-mediated)", percent: 5 },
-            { name: "Commercial Bubbles SaaS subset (derivative)", percent: 0 },
-            { name: "OS-level Bubbles", percent: 0 },
-            { name: "Embodied presence (robots, IoT, vehicle, wearables)", percent: 0 },
+            { name: "Multi-generational lineage (Article III, V, VIII anchored)", arch_locked: true, impl_locked: true, code_percent: 30, test_percent: null },
+            { name: "Adversarial-AI threat model (privacy-by-construction)", arch_locked: true, impl_locked: true, code_percent: 15, test_percent: null },
+            { name: "Hardware-credential form factor evolves", arch_locked: true, impl_locked: true, code_percent: 15, test_percent: null },
+            { name: "Live Leader-context awareness (full sensor surface)", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Live, persistent protection layer (sensor-mediated)", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Commercial Bubbles SaaS subset (derivative)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "OS-level Bubbles", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Embodied presence (robots, IoT, vehicle, wearables)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [],
-          confidence: null,
         },
         {
           name: "Module 6 — Federation (post-V1, deferred)",
-          percent: 3,
           weight: 0,
           submodules: [
-            { name: "Federation succession verification", percent: 10 },
-            { name: "Seamless mint ceremony", percent: 5 },
-            { name: "Emergency beacon (privacy-preserving payload)", percent: 0 },
-            { name: "Federation handshake / state-surface-sharing protocol", percent: 0 },
-            { name: "Federation mint + multi-bubble coordination", percent: 0 },
-            { name: "Federation as resource-pool propagation", percent: 0 },
+            { name: "Federation succession verification", arch_locked: true, impl_locked: true, code_percent: 10, test_percent: null },
+            { name: "Seamless mint ceremony", arch_locked: true, impl_locked: true, code_percent: 5, test_percent: null },
+            { name: "Emergency beacon (privacy-preserving payload)", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Federation handshake / state-surface-sharing protocol", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Federation mint + multi-bubble coordination", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
+            { name: "Federation as resource-pool propagation", arch_locked: false, impl_locked: false, code_percent: 0, test_percent: null },
           ],
           issues: [
             "Federation deferred from V1 by principal directive; does NOT count toward V1 readiness.",
-            "Mint ceremony orchestration + emergency beacon protocol + L2-at-mint enrollment all unbuilt; ride on existing keys/USB/airgap primitives.",
-          ],
-          confidence: null,
-        },
-        {
-          name: "Testing",
-          percent: null,
-          is_testing_section: true,
-          submodules: [
-            { name: "Module 1 — Capability scope readiness", percent: null, is_confidence: true },
-            { name: "Module 2 — Growth & continuity readiness", percent: null, is_confidence: true },
-            { name: "Module 3 — Operating disciplines", percent: 60, is_confidence: true },
-            { name: "Module 4 — Cross-platform presence", percent: null, is_confidence: true },
-            { name: "Module 5 — Long-term horizons", percent: null, is_confidence: true },
-            { name: "Module 6 — Federation (post-V1, deferred)", percent: null, is_confidence: true },
-          ],
-          issues: [
-            "Module 3 tested at confidence 60/100; post-audit work has closed every ranked finding. Re-test expected to lift confidence into 90+ range. Other modules untested — invoke /bubbles-test <n>.",
+            "Mint ceremony orchestration + emergency beacon protocol + L2-at-mint enrollment all unbuilt.",
           ],
         },
       ],
@@ -713,233 +524,118 @@
         }
       }
       const list = children == null ? [] : (Array.isArray(children) ? children : [children]);
-      for (const child of list) {
-        if (child == null) continue;
-        node.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
-      }
+      for (const child of list) { if (child == null) continue; node.appendChild(typeof child === "string" ? document.createTextNode(child) : child); }
       return node;
     }
 
-    /* ----- Test-confidence-weighted overall progress -----
-     *
-     * Policy (2026-05-21): untested modules contribute 0 to overall.
-     * The earlier 0.70-for-null multiplier inflated headline progress by
-     * treating untested the same as weakly tested; both were getting 70%
-     * credit. Now: no test pass → no contribution to the headline. Run
-     * /<project>-test to score a module and it begins counting.
-     */
-    function confidenceMultiplier(c) {
-      if (c == null) return 0.00;           // untested — no signal, no credit
-      if (c >= 80) return 1.00;             // strong confidence — full credit
-      if (c >= 60) return 0.85;             // moderate confidence — mild discount
-      return 0.50;                          // weak confidence (<60) — half credit
+    function submoduleEffectivePercent(s) {
+      const arch = (s.arch_locked || s.impl_locked) ? 100 : 0;
+      const impl = s.impl_locked ? 100 : 0;
+      const code = typeof s.code_percent === "number" ? s.code_percent : 0;
+      const test = typeof s.test_percent === "number" ? s.test_percent : 0;
+      return arch * 0.20 + impl * 0.20 + code * 0.40 + test * 0.20;
     }
-
-    function deriveTestingPercent(m) {
-      // Testing-section overall percent is the mean of confidence scores
-      // INCLUDING untested modules as 0 (so the section's headline reflects
-      // honest test coverage, not just the average of tested modules).
-      if (!m.is_testing_section || !m.submodules) return m.percent;
-      const all = m.submodules.filter(function (s) { return s.is_confidence; });
-      if (all.length === 0) return null;
-      const sum = all.reduce(function (acc, s) {
-        return acc + (typeof s.percent === "number" ? s.percent : 0);
-      }, 0);
-      return Math.round(sum / all.length);
+    function moduleEffectivePercent(m) {
+      if (!m.submodules || m.submodules.length === 0) return 0;
+      const sum = m.submodules.reduce(function (acc, s) { return acc + submoduleEffectivePercent(s); }, 0);
+      return Math.round(sum / m.submodules.length);
     }
-
-    function testingCoverage(m) {
-      if (!m.is_testing_section || !m.submodules) return null;
-      const all = m.submodules.filter(function (s) { return s.is_confidence; });
-      if (all.length === 0) return null;
-      const tested = all.filter(function (s) { return typeof s.percent === "number"; }).length;
-      return { tested: tested, total: all.length };
-    }
-    function effectivePercent(m) {
-      if (typeof m.percent !== "number") return null;
-      // No `confidence` field at all → not a test target (framing
-      // sections). Full credit; the policy below applies only to
-      // modules that opt into being scored.
-      if (!Object.prototype.hasOwnProperty.call(m, "confidence")) {
-        return m.percent;
-      }
-      return m.percent * confidenceMultiplier(m.confidence);
-    }
-    function computeOverallPercent(modules) {
+    function overallEffectivePercent(modules) {
       var weightedSum = 0, totalWeight = 0;
       for (var i = 0; i < modules.length; i++) {
         var m = modules[i];
-        if (m.is_testing_section || m.is_timeline) continue;
-        if (typeof m.percent !== "number") continue;
-        var w = (typeof m.weight === "number") ? m.weight : 1;
+        var w = typeof m.weight === "number" ? m.weight : 1;
         if (w <= 0) continue;
-        var eff = effectivePercent(m);
-        if (eff == null) continue;
-        weightedSum += eff * w;
+        weightedSum += moduleEffectivePercent(m) * w;
         totalWeight += w;
       }
       return totalWeight === 0 ? 0 : Math.round(weightedSum / totalWeight);
     }
 
     function pct(n) { return n == null ? "—" : n + "%"; }
-
-    function statusFor(p, opts) {
-      if (opts && opts.isConfidence && p == null) return { cls: "status-untested", text: "untested" };
-      if (p == null) return { cls: "status-untested", text: "pending" };
-      if (p >= 100) return { cls: "status-done", text: "done" };
-      if (p <= 0) return { cls: "status-todo", text: "todo" };
-      return { cls: "status-partial", text: "partial" };
-    }
-
-    function fillClassFor(p) {
-      if (p == null) return "bar-fill empty";
-      if (p >= 100) return "bar-fill done";
-      if (p <= 0) return "bar-fill empty";
-      return "bar-fill";
-    }
-
-    function confidenceClsFor(c) {
-      if (c == null) return "confidence-untested";
-      if (c >= 70) return "confidence-high";
-      if (c >= 40) return "confidence-medium";
-      return "confidence-low";
-    }
-
-    function confidenceLabel(c) {
-      return c == null ? "Not yet tested" : c + " / 100";
-    }
+    function fillClassFor(p) { if (p == null || p <= 0) return "bar-fill empty"; return "bar-fill"; }
 
     function progressBar(percent, fillClass) {
-      const safePct = percent == null ? 0 : Math.max(0, Math.min(100, percent));
-      return el("div", { class: "bar-track" }, [
-        el("div", {
-          class: fillClass || fillClassFor(percent),
-          style: "width: " + safePct + "%",
-        }),
+      const safe = percent == null ? 0 : Math.max(0, Math.min(100, percent));
+      return el("div", { class: "bar-track" }, [el("div", { class: fillClass || fillClassFor(percent), style: "width: " + safe + "%" })]);
+    }
+
+    function dimChip(kind, on) {
+      const labels = { arch: "A", impl: "I" };
+      return el("span", { class: "dim-chip " + (on ? "on " : "") + kind, title: kind + (on ? " locked" : " unlocked") }, labels[kind]);
+    }
+    function dimMiniBar(kind, value) {
+      const isNull = value == null;
+      const safe = isNull ? 0 : Math.max(0, Math.min(100, value));
+      const fillClass = isNull || safe === 0 ? "dim-bar-fill empty" : "dim-bar-fill " + kind;
+      const labelText = kind === "code"
+        ? (isNull ? "C —" : "C " + safe + "%")
+        : (isNull ? "T —" : "T " + safe + "/100");
+      return el("div", { class: "dim-bar-wrap" }, [
+        el("div", { class: "dim-bar-track" }, [el("div", { class: fillClass, style: "width: " + safe + "%" })]),
+        el("span", { class: "dim-label" + (isNull ? "" : " locked") }, labelText),
       ]);
     }
 
     function renderHeader() {
-      var computedOverall = computeOverallPercent(DATA.modules);
-      DATA.overall_percent = computedOverall;
-      document.getElementById("overall-percent").textContent = pct(computedOverall);
-      document.getElementById("overall-bar").style.width = pct(computedOverall);
-      const fillEl = document.getElementById("overall-bar");
-      fillEl.className = fillClassFor(computedOverall);
-      const subtitle = document.getElementById("subtitle");
-      subtitle.textContent = "Snapshot: " + DATA.source;
-      document.getElementById("footer").innerHTML =
-        "Last updated " + DATA.generated_at +
-        " &middot; " +
-        "<a href=\"https://github.com/gouthamreddym22-collab/Bubbles-progress\" target=\"_blank\" rel=\"noopener\">view source on GitHub</a>";
+      const overall = overallEffectivePercent(DATA.modules);
+      document.getElementById("overall-percent").textContent = pct(overall);
+      document.getElementById("overall-bar").style.width = pct(overall);
+      document.getElementById("overall-bar").className = fillClassFor(overall);
+      document.getElementById("subtitle").textContent = "Snapshot: " + DATA.source;
+      document.getElementById("footer").innerHTML = "Last updated " + DATA.generated_at + " &middot; <a href=\"https://github.com/gouthamreddym22-collab/Bubbles-progress\" target=\"_blank\" rel=\"noopener\">view source on GitHub</a>";
+    }
+
+    function renderSubmodule(s) {
+      const effPct = Math.round(submoduleEffectivePercent(s));
+      const nameRow = el("div", { class: "sub-top" }, [
+        el("span", { class: "sub-name" }, s.name),
+        el("span", { class: "sub-percent" }, pct(effPct)),
+      ]);
+      const archOn = !!(s.arch_locked || s.impl_locked);
+      const implOn = !!s.impl_locked;
+      const dimStrip = el("div", { class: "dim-strip" }, [
+        el("div", { class: "dim" }, [dimChip("arch", archOn), el("span", { class: "dim-label" + (archOn ? " locked" : "") }, archOn ? "Locked" : "—")]),
+        el("div", { class: "dim" }, [dimChip("impl", implOn), el("span", { class: "dim-label" + (implOn ? " locked" : "") }, implOn ? "Locked" : "—")]),
+        el("div", { class: "dim" }, [dimMiniBar("code", s.code_percent)]),
+        el("div", { class: "dim" }, [dimMiniBar("test", s.test_percent)]),
+      ]);
+      return el("div", { class: "sub" }, [nameRow, dimStrip]);
     }
 
     function renderModule(m, opts) {
       const openByDefault = !!(opts && opts.openByDefault);
       const hasIssues = m.issues && m.issues.length > 0;
-      const isTestingSection = !!m.is_testing_section;
-      const hasConfidence = Object.prototype.hasOwnProperty.call(m, "confidence");
-
-      const iconEl = isTestingSection
-        ? el("span", { class: "test-dot", title: "testing section" })
-        : (hasIssues
-            ? el("span", { class: "warn-dot", title: m.issues.length + " open issue(s)" })
-            : (m.percent >= 100 ? el("span", { class: "done-dot", title: "complete" }) : null));
-
-      const nameRow = el("div", { class: "module-name-row" }, [
-        iconEl,
-        el("span", { class: "module-name" }, m.name),
-      ]);
-      const meta = el("div", { class: "module-meta" }, [
-        el("span", { class: "module-percent" }, pct(m.percent)),
-        el("span", { class: "chevron", title: "expand / collapse" }, "▾"),
-      ]);
-      const bar = el("div", { class: "module-bar" }, [
-        progressBar(m.percent),
-      ]);
-      const header = el("div", {
-        class: "module-header" + (isTestingSection ? " testing-header" : ""),
-        role: "button",
-        tabindex: "0",
-        "aria-expanded": openByDefault ? "true" : "false",
-      }, [nameRow, meta, bar]);
-
+      const effPct = moduleEffectivePercent(m);
+      const iconEl = hasIssues
+        ? el("span", { class: "warn-dot", title: m.issues.length + " open issue(s)" })
+        : (effPct >= 100 ? el("span", { class: "done-dot", title: "complete" }) : null);
+      const nameRow = el("div", { class: "module-name-row" }, [iconEl, el("span", { class: "module-name" }, m.name)]);
+      const meta = el("div", { class: "module-meta" }, [el("span", { class: "module-percent" }, pct(effPct)), el("span", { class: "chevron" }, "▾")]);
+      const bar = el("div", { class: "module-bar" }, [progressBar(effPct)]);
+      const header = el("div", { class: "module-header", role: "button", tabindex: "0", "aria-expanded": openByDefault ? "true" : "false" }, [nameRow, meta, bar]);
       const bodyChildren = [];
       if (m.submodules && m.submodules.length) {
-        bodyChildren.push(el("div", { class: "section-label" }, isTestingSection ? "Module confidence scores" : "Sub-items"));
-        for (const s of m.submodules) {
-          const isSubConfidence = !!s.is_confidence;
-          const st = statusFor(s.percent, { isConfidence: isSubConfidence });
-          const statusText = isSubConfidence && s.percent == null ? "not yet tested" : st.text;
-          const percentLabel = isSubConfidence
-            ? (s.percent == null ? "—" : s.percent + " / 100")
-            : pct(s.percent);
-          const subTop = el("div", { class: "sub-top" }, [
-            el("span", { class: "sub-name" }, s.name),
-            el("span", { class: "sub-percent" }, percentLabel),
-            el("span", { class: "sub-status " + st.cls }, statusText),
-          ]);
-          const subBar = el("div", { class: "sub-bar" }, [progressBar(s.percent)]);
-          bodyChildren.push(el("div", { class: "sub" }, [subTop, subBar]));
-        }
-      }
-      if (hasConfidence && !isTestingSection) {
-        bodyChildren.push(el("div", { class: "section-label" }, "Test confidence"));
-        const cls = confidenceClsFor(m.confidence);
-        bodyChildren.push(el("div", { class: "confidence-row " + cls }, [
-          el("span", { class: "confidence-label" }, confidenceLabel(m.confidence)),
-          el("span", { class: "confidence-hint" }, m.confidence == null ? "run /bubbles-test to score this module" : "score / 100"),
-        ]));
+        bodyChildren.push(el("div", { class: "section-label" }, "Sub-items (4-dimension progress)"));
+        for (const s of m.submodules) bodyChildren.push(renderSubmodule(s));
       }
       if (hasIssues) {
-        bodyChildren.push(el("div", { class: "section-label" }, isTestingSection ? "Notes" : "Open issues / followups"));
+        bodyChildren.push(el("div", { class: "section-label" }, "Open issues / followups"));
         const ul = el("ul", { class: "issues-list" });
-        for (const issue of m.issues) {
-          ul.appendChild(el("li", { class: "issue" }, [
-            el("span", { class: "issue-icon" }, isTestingSection ? "ⓘ" : "⚠"),
-            el("span", { html: issue }),
-          ]));
-        }
+        for (const issue of m.issues) ul.appendChild(el("li", { class: "issue" }, [el("span", { class: "issue-icon" }, "⚠"), el("span", { html: issue })]));
         bodyChildren.push(ul);
       }
       const body = el("div", { class: "module-body" }, bodyChildren);
-
       const root = el("div", { class: "module" + (openByDefault ? " open" : "") }, [header, body]);
-
-      function toggle() {
-        const willOpen = !root.classList.contains("open");
-        root.classList.toggle("open");
-        header.setAttribute("aria-expanded", willOpen ? "true" : "false");
-      }
+      function toggle() { const willOpen = !root.classList.contains("open"); root.classList.toggle("open"); header.setAttribute("aria-expanded", willOpen ? "true" : "false"); }
       header.addEventListener("click", toggle);
-      header.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          toggle();
-        }
-      });
+      header.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
       return root;
     }
 
     function renderModules() {
       const host = document.getElementById("modules");
-      DATA.modules.forEach(function (m, idx) {
-        if (m.is_testing_section) {
-          m.percent = deriveTestingPercent(m);
-          const cov = testingCoverage(m);
-          if (cov) {
-            const covLine =
-              "<b>Coverage: " + cov.tested + " of " + cov.total +
-              " modules tested</b> (" + Math.round(100 * cov.tested / cov.total) +
-              "%). Untested modules count as 0 in this section's average and " +
-              "contribute 0 to overall progress until a test pass scores them.";
-            m.issues = [covLine].concat(m.issues || []);
-          }
-        }
-        // Open the first module (V1 ship bar) by default — gives
-        // visitors an immediate example of the expand affordance.
-        host.appendChild(renderModule(m, { openByDefault: idx === 0 }));
-      });
+      DATA.modules.forEach(function (m, idx) { host.appendChild(renderModule(m, { openByDefault: idx === 0 })); });
     }
 
     renderHeader();
